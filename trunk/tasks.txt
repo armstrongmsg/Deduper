@@ -1,0 +1,4 @@
+- add coments to the functions on deduplication_model.c
+- refactor model_input_generator.c
+
+
