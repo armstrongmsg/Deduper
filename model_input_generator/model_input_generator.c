@@ -71,6 +71,11 @@ int find_next_non_marked_file(int *marked_files, int start, int end)
 	return -1;
 }
 
+FILE_POPULARITY *generate_file_popularity_with_linear_values(int popularity_factor, FILE_ALLOCATION *file_allocation)
+{
+	return NULL;
+}
+
 FILE_SIMILARITY *generate_file_similarity(FILE_ALLOCATION *file_allocation, double duplication_level)
 {
 	int number_of_files = file_allocation->number_of_files;
@@ -115,3 +120,5 @@ FILE_SIMILARITY *generate_file_similarity(FILE_ALLOCATION *file_allocation, doub
 
 	return file_similarity;
 }
+
+
