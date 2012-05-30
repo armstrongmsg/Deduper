@@ -61,10 +61,41 @@ FILE_ALLOCATION *generate_file_allocation(int number_of_files, int number_of_mac
 
 /*
     Constructs a FILE_POPULARITY with the given number of files. All the 
-    file will have the same popularity.
+    files will have the same popularity.
     The returned struct must be destructed with destruct_file_popularity.
 */
 FILE_POPULARITY *generate_file_popularity_with_equal_value(int number_of_files, int popularity);
+
+/*
+    Constructs a FILE_POPULARITY with the given number of files.
+    The file in a machine will have linear popularity based on
+    the given popularity_factor and file_allocation.
+
+    Example:
+	
+	Given the file_allocation presented below:
+		
+		file    machine
+		  0   	   0
+		  1	   0	
+		  2 	   0
+		  3	   1
+		  4  	   1
+		  5	   1
+
+	And popularity_factor = 2, the generated FILE_POPULARITY will be:
+
+		file     popularity
+		  0	   2
+		  1	   4
+		  2	   6
+		  3	   2
+		  4	   4
+		  5 	   6
+
+	Thereby, the popularity of the i-th file of a machine is (i + 1)*popularity_factor.
+*/
+FILE_POPULARITY *generate_file_popularity_with_linear_values(int popularity_factor, FILE_ALLOCATION *file_allocation);
 
 /*
     Constructs a FILE_SIMILARITY, based on the given FILE_ALLOCATION 
