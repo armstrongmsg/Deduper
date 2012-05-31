@@ -71,9 +71,46 @@ int find_next_non_marked_file(int *marked_files, int start, int end)
 	return -1;
 }
 
+/*
+	for each machine
+		file_in_machine := 1;
+		
+		while file_in_machine < number_of_files_in_machine do
+			file_popularity := file_in_machine*popularity_factor
+			file_in_machine := file_in_machine + 1;
+		endwhile
+	endfor
+*/
+
 FILE_POPULARITY *generate_file_popularity_with_linear_values(int popularity_factor, FILE_ALLOCATION *file_allocation)
 {
-	return NULL;
+	FILE_POPULARITY *new_file_popularity = NULL;
+	int number_of_files = 0;
+	int i = 0;
+	int file_in_machine = 1;
+	int machine = 0;
+
+	assert(popularity_factor >= 0);
+	assert(file_allocation);
+
+	number_of_files = file_allocation->number_of_files;
+	new_file_popularity = construct_file_popularity(number_of_files);
+	
+	assert(new_file_popularity);
+
+	for ( ; i < number_of_files ; i++)
+	{
+		if (file_allocation->machines[i] != machine)
+		{
+			machine = file_allocation->machines[i];
+			file_in_machine = 1;	
+		}
+
+		new_file_popularity->popularity[i] = file_in_machine*popularity_factor;		
+		file_in_machine++;
+	}
+
+	return new_file_popularity;
 }
 
 FILE_SIMILARITY *generate_file_similarity(FILE_ALLOCATION *file_allocation, double duplication_level)
