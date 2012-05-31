@@ -202,8 +202,8 @@ void run(int argc, char *argv[])
 	}
 
 	check_all_arguments_were_given(model_runner_args);
-		
-	impact = run_with_same_popularity_equalized_storage(
+	
+	impact = run_with_linear_popularity_equalized_storage(
 				model_runner_args->duplication_level,
 				model_runner_args->popularity,
 				model_runner_args->number_of_files,
