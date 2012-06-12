@@ -100,15 +100,15 @@ MODEL_RUNNER_ARGS *construct_model_runner_args(
 {
 	MODEL_RUNNER_ARGS *new_args = NULL;
 
-	assert(duplication_level >= 0);
-	assert(popularity >= 0);
-	assert(number_of_files > 0);
-	assert(number_of_machines > 0);
-	assert(remote_access_time >= 0);
-	assert(local_access_time >= 0);
-	assert(deduplicate_randomically >= 0);
-	assert(machine >= 0);
-	assert(popularity_factor >= 0);
+	assert(duplication_level >= -1);
+	assert(popularity >= -1);
+	assert(number_of_files >= -1);
+	assert(number_of_machines >= -1);
+	assert(remote_access_time >= -1);
+	assert(local_access_time >= -1);
+	assert(deduplicate_randomically >= -1);
+	assert(machine >= -1);
+	assert(popularity_factor >= -1);
 
 	new_args = (MODEL_RUNNER_ARGS *) malloc(sizeof(MODEL_RUNNER_ARGS));
 

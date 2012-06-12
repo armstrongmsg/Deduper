@@ -7,7 +7,8 @@
 
 typedef enum {number_of_files, number_of_machines, 
 		   duplication_level, remote_access_time, 	
-		   local_access_time, popularity, machine} ARGUMENT_TYPE;
+		   local_access_time, popularity, machine, 
+		   deduplicate_randomically} ARGUMENT_TYPE;
 
 char *argument_representation[] = {"f", "m", "d", "r", "l", "p", "a"};
 
@@ -20,7 +21,7 @@ void stop(char *message)
 void invalid_arguments(void)
 {
 	puts("Invalid use.");
-	puts("Correct use: deduper args");
+	puts("Correct use: deduper destination file  mode  args");
 	stop("");
 }
 
@@ -50,6 +51,7 @@ ARGUMENT_TYPE get_argument_type(char *arg_type_string)
 		case 'l': arg_type = local_access_time; break;
 		case 'p': arg_type = popularity; break;
 		case 'a': arg_type = machine; break;
+		case 'x': arg_type = deduplicate_randomically; break; 
 		default: invalid_arguments();	
 	}
 
@@ -69,8 +71,7 @@ void get_argument_value(MODEL_RUNNER_ARGS *args,
 			int number_of_files = atoi(arg_value_string);
 			if (number_of_files <= 0)
 			{
-				// stop execution
-				// invalid value
+				invalid_arguments();
 			}
 			
 			args->number_of_files = number_of_files;	
@@ -81,8 +82,7 @@ void get_argument_value(MODEL_RUNNER_ARGS *args,
 			int number_of_machines = atoi(arg_value_string);
 			if (number_of_machines <= 0)
 			{
-				// stop execution
-				// invalid value
+				invalid_arguments();
 			}
 			
 			args->number_of_machines = number_of_machines;
@@ -94,8 +94,7 @@ void get_argument_value(MODEL_RUNNER_ARGS *args,
 		
 			if (duplication_level < 0)
 			{
-				// stop execution
-				// invalid value
+				invalid_arguments();
 			}
 
 			args->duplication_level = duplication_level;
@@ -107,8 +106,7 @@ void get_argument_value(MODEL_RUNNER_ARGS *args,
 		
 			if (remote_access_time < 0)
 			{
-				// stop execution
-				// invalid value
+				invalid_arguments();
 			}			
 
 			args->remote_access_time = remote_access_time;
@@ -120,8 +118,7 @@ void get_argument_value(MODEL_RUNNER_ARGS *args,
 
 			if (local_access_time < 0)
 			{
-				// stop execution
-				// invalid value
+				invalid_arguments();
 			}
 
 			args->local_access_time = local_access_time;	
@@ -132,11 +129,11 @@ void get_argument_value(MODEL_RUNNER_ARGS *args,
 			int popularity = atoi(arg_value_string);
 			if (popularity < 0)
 			{
-				// stop execution
-				// invalid value
+				invalid_arguments();
 			}
 
 			args->popularity = popularity;
+			args->popularity_factor = popularity;
 		} break;
 
 		case machine:
@@ -144,25 +141,121 @@ void get_argument_value(MODEL_RUNNER_ARGS *args,
 			int machine = atoi(arg_value_string);
 			if (machine < 0)
 			{
-				// stop execution
-				// invalid value
+				invalid_arguments();
 			}
 			args->machine = machine;
-		}
+		} break;
+		
+		case deduplicate_randomically:
+		{
+			int deduplicate_randomically = atoi(arg_value_string);
+			if (deduplicate_randomically < 0)
+			{
+				invalid_arguments();
+			}
+			args->deduplicate_randomically = deduplicate_randomically;
+		} break;
 	}
 }
 
 void check_all_arguments_were_given(MODEL_RUNNER_ARGS *args)
 {
-	if (args->number_of_files == -1     ||
-	    args->number_of_machines == -1  ||
-	    args->duplication_level == -1 ||
-	    args->remote_access_time == -1  ||
-	    args->local_access_time == -1   ||
-	    args->popularity == -1)
-//	    args->machine == -1)
+	if (args->deduplicate_randomically == -1)
 	{
-		some_arguments_are_missing();	
+		some_arguments_are_missing();
+	}
+
+	switch(args->mode)
+	{
+		case SAME_POPULARITY_EQUALIZED_STORAGE_MACHINE:
+		{
+			if (args->machine == -1)
+			{
+				some_arguments_are_missing();
+			}
+		}
+
+		case SAME_POPULARITY_EQUALIZED_STORAGE:
+		
+		case SAME_POPULARITY_EQUALIZED_STORAGE_ALL_MACHINES:
+		{
+			if (args->number_of_files == -1     ||
+	    		    args->number_of_machines == -1  ||
+	    		    args->duplication_level == -1   ||
+	    		    args->remote_access_time == -1  ||
+	    		    args->local_access_time == -1   ||
+	    		    args->popularity == -1)
+			{
+				some_arguments_are_missing();
+			}
+		} break;
+		
+		case LINEAR_POPULARITY_EQUALIZED_STORAGE:
+		{
+			if (args->number_of_files == -1     ||
+	    		    args->number_of_machines == -1  ||
+	    		    args->duplication_level == -1   ||
+	    		    args->remote_access_time == -1  ||
+	    		    args->local_access_time == -1   ||
+	    		    args->popularity_factor == -1)
+			{
+				some_arguments_are_missing();
+			}	
+		} break;
+	}
+}
+
+MODEL_RUNNER_MODE get_model_runner_mode_from_string(char *string)
+{
+	MODEL_RUNNER_MODE mode;
+
+	switch(string[0])
+	{
+		case '0': mode = SAME_POPULARITY_EQUALIZED_STORAGE; break;
+		case '1': mode = SAME_POPULARITY_EQUALIZED_STORAGE_MACHINE; break;
+		case '2': mode = SAME_POPULARITY_EQUALIZED_STORAGE_ALL_MACHINES; break;
+		case '3': mode = LINEAR_POPULARITY_EQUALIZED_STORAGE; break;
+		default : invalid_arguments();
+	}
+	
+	return mode;	
+}
+
+void print_results(MODEL_RUNNER_ARGS *model_runner_args, MODEL_RUNNER_RESULTS *model_runner_results, FILE *output_file)
+{
+	switch(model_runner_args->mode)
+	{
+		case SAME_POPULARITY_EQUALIZED_STORAGE:
+		{
+
+		}
+
+		case LINEAR_POPULARITY_EQUALIZED_STORAGE:
+		{
+			
+		}
+
+		case SAME_POPULARITY_EQUALIZED_STORAGE_MACHINE:
+		{
+			fprintf(output_file, "%f    %f\n", model_runner_args->duplication_level, 
+							   model_runner_results->time_access_impact);				
+		} break;
+
+		case SAME_POPULARITY_EQUALIZED_STORAGE_ALL_MACHINES:
+		{
+			int machine = 0;
+			int number_of_machines = model_runner_args->number_of_machines;
+			double *impacts = model_runner_results->time_access_impacts_all_machines;
+		
+			printf("impact duplication level=%f\n", model_runner_args->duplication_level);
+			for (; machine < number_of_machines; machine++)
+			{
+				fprintf(output_file, "%d  %f\n", 
+					machine, *(impacts + machine));
+			}
+
+			fprintf(output_file, "\n");
+		} break;
 	}
 }
 
@@ -173,14 +266,14 @@ void run(int argc, char *argv[])
 	char *arg_value = NULL;
 	MODEL_RUNNER_ARGS *model_runner_args = NULL; 
 	MODEL_RUNNER_RESULTS *model_runner_results = NULL;	
-	double *impacts = NULL;
 	char *output_file_name = NULL;
 	FILE *output_file = NULL;
-	int machine = 0;
+	char *model_runner_mode_name = NULL;
+	MODEL_RUNNER_MODE mode = 0;
 	int *number_of_duplicatas_on_machines = NULL;
 
 	model_runner_args = construct_model_runner_args(SAME_POPULARITY_EQUALIZED_STORAGE_ALL_MACHINES,
-				    1, 1, 1, 1, 1, 1, 1, 1, 1, NULL);
+				    -1, -1, -1, -1, -1, -1, -1, -1, -1, NULL);
 
 	check_number_of_arguments(argc);	
 
@@ -188,7 +281,12 @@ void run(int argc, char *argv[])
 	output_file = fopen(output_file_name, "a+");
 	assert(output_file);
 
-	for (i = 2; i < argc; i+= 2)
+	model_runner_mode_name = argv[2];
+	mode = get_model_runner_mode_from_string(model_runner_mode_name);
+
+	model_runner_args->mode = mode;
+
+	for (i = 3; i < argc; i+= 2)
 	{
 		arg_type = get_argument_type(argv[i]);
 		arg_value = argv[i + 1];
@@ -201,20 +299,9 @@ void run(int argc, char *argv[])
 	model_runner_args->number_of_duplicated_files = number_of_duplicatas_on_machines;
 	
 	model_runner_results = run_model(model_runner_args);	
-	impacts = model_runner_results->time_access_impacts_all_machines;
+
+	print_results(model_runner_args, model_runner_results, output_file);
 	
-	printf("impact duplication level=%f\n", model_runner_args->duplication_level);
-	int number_of_machines = model_runner_args->number_of_machines;
-	for (machine = 0 ; machine < number_of_machines; machine++)
-	{
-		fprintf(output_file, "%d  %f\n", 
-			machine, *(impacts + machine));
-	}
-
-	fprintf(output_file, "\n");
-
-	fprintf(output_file, "\n");
-
 	destruct_model_runner_args(model_runner_args);
 	destruct_model_runner_results(model_runner_results);
 	fclose(output_file);
