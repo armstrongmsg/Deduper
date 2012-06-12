@@ -56,21 +56,6 @@ FILE_POPULARITY *generate_file_popularity_with_equal_value(int number_of_files, 
 	return file_popularity;
 }
 
-int find_next_non_marked_file(int *marked_files, int start, int end)
-{
-	int i;
-
-	for (i = start; i <= end; i++)
-	{
-		if (!marked_files[i])
-		{
-			return i;
-		}
-	}
-
-	return -1;
-}
-
 /*
 	for each machine
 		file_in_machine := 1;
@@ -100,6 +85,14 @@ FILE_POPULARITY *generate_file_popularity_with_linear_values(int popularity_fact
 
 	for ( ; i < number_of_files ; i++)
 	{
+		/*
+			If the current file is not stored in
+			the current machine, then change the 
+			value of the current machine to the
+			machine where the file is stored and 
+			reset the file in machine counter.
+		*/		
+
 		if (file_allocation->machines[i] != machine)
 		{
 			machine = file_allocation->machines[i];
@@ -113,49 +106,70 @@ FILE_POPULARITY *generate_file_popularity_with_linear_values(int popularity_fact
 	return new_file_popularity;
 }
 
+
+
+
+
+
+int *new_similar_files(int number_of_machines, int files_per_machine, 
+			 int next_not_chosen)
+{
+	int *duplicated = (int *) malloc(sizeof(int)*number_of_machines);
+	int machine = 0;	
+
+	for ( ; machine < number_of_machines; machine++)
+	{
+		duplicated[machine] = machine*files_per_machine + next_not_chosen;
+	}
+
+	return duplicated;
+}
+
+void choose_similar_files(FILE_SIMILARITY *file_similarity, 
+				int number_of_machines, 
+				int files_per_machine, 
+				int next_non_marked)
+{
+	int *duplicated = new_similar_files(number_of_machines, 
+					files_per_machine,
+					next_non_marked);
+	set_similar_files(file_similarity, duplicated, 
+				number_of_machines);
+
+	free(duplicated);	
+}
+
+
+/*	
+	for each group in groups_of_similar_files do
+		for each machine do
+			choose the next not-chosen file in machine to the group
+		endfor
+
+		set the file in group as similar
+	endfor
+*/
+
 FILE_SIMILARITY *generate_file_similarity(FILE_ALLOCATION *file_allocation, double duplication_level)
 {
 	int number_of_files = file_allocation->number_of_files;
 	int number_of_machines = file_allocation->machines[number_of_files - 1] + 1;
 	FILE_SIMILARITY *file_similarity = NULL;
-	int *marked_files = NULL;
 	int number_of_duplicated_files = ceil(number_of_files*duplication_level);
-	int files_duplicated = 0;
 	int files_per_machine = number_of_files/number_of_machines;
+	int similar_group = 0;
 
 	assert(file_allocation);
 
 	file_similarity = construct_file_similarity(number_of_files);	
 	assert(file_similarity);
 	
-	marked_files = (int *) malloc(sizeof(int)*number_of_files);
-	assert(marked_files);
-	memset(marked_files, 0, sizeof(int)*number_of_files);
-	
-	while (files_duplicated < number_of_duplicated_files)
-	{		
-		int machine = 0;
-		int *duplicated = (int *) malloc(sizeof(int)*number_of_machines);
-
-		for ( ; machine < number_of_machines; machine++)
-		{	
-			int duplicated_file = find_next_non_marked_file(marked_files, 
-						  machine*files_per_machine,
-						  (machine + 1)*files_per_machine);	
-			marked_files[duplicated_file] = 1;
-			duplicated[machine] = duplicated_file;
-		}
-	
-		files_duplicated += number_of_machines;
-		set_similar_files(file_similarity, duplicated, 
-					number_of_machines);
-
-		free(duplicated);		
+	for (; similar_group < number_of_duplicated_files/number_of_machines; similar_group++)
+	{
+		choose_similar_files(file_similarity, 
+			number_of_machines, files_per_machine, 
+				similar_group);
 	}
-
-	free(marked_files);
 
 	return file_similarity;
 }
-
-

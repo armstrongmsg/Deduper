@@ -82,8 +82,6 @@ long system_popularity(FILE_POPULARITY *file_popularity)
 		system_popularity += file_popularity->popularity[i];
 	}
 
-	printf("%ld\n", system_popularity);
-			
 	return system_popularity;
 }
 

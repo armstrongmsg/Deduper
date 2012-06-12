@@ -15,6 +15,7 @@
 # include <assert.h>
 # include <string.h>
 # include "file_similarity.h"
+# include "../file_allocation/file_allocation.h"
 
 FILE_SIMILARITY *construct_file_similarity(int number_of_files)
 {
@@ -141,7 +142,75 @@ void set_similar_files(FILE_SIMILARITY *similarity,
 			similarity->similar_files[file*total_number_of_files + similar] = 1;
 		}
 	}	
+}
 
+int there_is_similar_file_on_machine_after_deduplication(FILE_SIMILARITY *similarity,
+                                     FILE_ALLOCATION *initial_file_allocation,
+				     FILE_ALLOCATION *final_file_allocation,
+                                     int file)
+{
+	int i = 0;
+	int number_of_files = 0;
 
+	assert(similarity);
+	assert(initial_file_allocation);
+	assert(final_file_allocation);
+	assert(file >= 0);
+	
+	number_of_files = initial_file_allocation->number_of_files;	
+
+	for ( ; i < number_of_files; i++)
+	{
+		int coallocated = (initial_file_allocation->machines[file] == initial_file_allocation->machines[i]); 
+		int similar = (similarity->similar_files[number_of_files*file + i] == 1);
+		int are_different = (i != file);
+		int exists = (final_file_allocation->machines[i] != -1);
+
+		if (coallocated && similar && are_different && exists)
+		{
+			return 1;
+		}
+	}	
+	
+	return 0;
+}
+
+int number_of_duplicatas(FILE_SIMILARITY *similarity,
+                        int file)
+{
+	int number_of_duplicatas = 0;
+	int other_file = 0;
+
+	assert(similarity);
+	assert(file >= 0);	
+
+	for ( ; other_file < similarity->number_of_files; other_file++)
+	{
+		if (similarity->similar_files[file*similarity->number_of_files + other_file] == 1 && other_file != file)
+		{
+			number_of_duplicatas++;
+		}
+	}
+	
+	return number_of_duplicatas;
+}
+
+int has_duplicatas(FILE_SIMILARITY *similarity,
+                        int file)
+{
+	int other_file = 0;
+
+	assert(similarity);
+	assert(file >= 0);	
+
+	for ( ; other_file < similarity->number_of_files; other_file++)
+	{
+		if (similarity->similar_files[file*similarity->number_of_files + other_file] == 1 && other_file != file)
+		{
+			return 1;
+		}
+	}
+	
+	return 0;
 }
 

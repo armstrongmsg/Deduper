@@ -2,7 +2,7 @@ CFLAGS=-g -Wall
 
 all: deduplicator_test
 
-deduplicator_test: deduplicator.o ../file_allocation/file_allocation.o ../file_similarity/file_similarity.o 
+deduplicator_test: deduplicator.o ../file_allocation/file_allocation.o ../file_similarity/file_similarity.o ../random/random.o 
 
 clean:
 	rm -f deduplicator_test

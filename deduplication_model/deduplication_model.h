@@ -31,6 +31,19 @@ double time_access_impact_per_operation(
 				double remote_access_time, 
 				double local_access_time);
 
+/*
+  It returns the impact on the time of access of the files
+  stored in the given machine.  
+*/
+double time_access_impact_per_operation_on_machine(	
+				FILE_ALLOCATION *allocation_initial_system, 
+				FILE_ALLOCATION *allocation_final_system,
+				FILE_SIMILARITY *file_similarity,
+				FILE_POPULARITY *file_popularity, 
+				double remote_access_time, 
+				double local_access_time,
+				int machine);
+
 
 /*
 # endif 

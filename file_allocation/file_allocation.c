@@ -22,17 +22,15 @@ FILE_ALLOCATION *construct_file_allocation(int number_of_files)
 	int *machines = NULL;
 
 	assert(number_of_files > 0);
-	
-	new_file_allocation = 
-			 (FILE_ALLOCATION *) malloc(sizeof(FILE_ALLOCATION));
 
+	new_file_allocation = (FILE_ALLOCATION *) malloc(sizeof(FILE_ALLOCATION));
 	assert(new_file_allocation);
 	
 	machines = (int *) malloc(sizeof(int)*number_of_files);
-	memset(machines, '\0', sizeof(int)*number_of_files);
-	
 	assert(machines);
 
+	memset(machines, '\0', sizeof(int)*number_of_files);
+	
 	new_file_allocation->machines = machines;
 	new_file_allocation->number_of_files = number_of_files;
 

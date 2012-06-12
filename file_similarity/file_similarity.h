@@ -20,6 +20,7 @@
 # ifndef FILE_SIMILARITY_H
 # define FILE_SIMILARITY_H
 
+# include "../file_allocation/file_allocation.h"
 /*
    This struct is used to keep a reference to the array mentioned above.
 */
@@ -75,4 +76,29 @@ void set_similar_files(FILE_SIMILARITY *similarity,
 			int *similar_files,
 			int number_of_similar_files);
 
+/*
+   Returns 1 if there is at least one file coalocated with
+   and not equal to the file indexed by the given index and 
+   similar to it after deduplication, and returns 0 otherwise.
+   If the given file doesn't exist in the given allocation, 
+   the function returns 0
+*/
+int there_is_similar_file_on_machine_after_deduplication(FILE_SIMILARITY *similarity, 
+				     FILE_ALLOCATION *initial_file_allocation,
+			  	     FILE_ALLOCATION *final_file_allocation, 
+				     int file);
+
+/*
+   Returns 1 if there is at least one file similar to the
+   given file in the given similarity
+*/
+int has_duplicatas(FILE_SIMILARITY *similarity, 
+			int file);
+
+/*
+   Returns the number of duplicatas of the given file
+   on the given similarity
+*/
+int number_of_duplicatas(FILE_SIMILARITY *similarity,
+			int file);
 # endif
