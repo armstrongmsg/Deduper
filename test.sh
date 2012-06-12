@@ -1,7 +1,15 @@
 #!/bin/bash
 
-directory="41ed"
-files=`ls`
+# Federal University of Campina Grande
+# Distributed Systems Laboratory
+# Author: Armstrong Mardilson da Silva Goes
+# Contact: armstrongmsg@lsd.ufcg.edu.br
+
+#
+# This script integrates the tests running
+#
+
+files="deduplication_model deduplicator file_allocation file_popularity file_similarity matrixes model_input_generator model_runner" 
 
 function space()
 {
@@ -15,20 +23,14 @@ function space()
 space
 
 for i in $files ; do
-	if [ "`stat --format %f $i`" = $directory ]; then
-		if [ $i != "interface" ]; then
-			cd $i
-
-			echo
-			echo "-----------------"
-			echo "testing   $i"
-			echo "-----------------"
-			echo
-
-			make "clean" "all" "run"
-			cd ..
-		fi
-	fi
+	cd $i
+	echo
+	echo "-----------------"
+	echo "testing   $i"
+	echo "-----------------"
+	echo
+	make "clean" "all" "run"
+	cd ..
 done 
 
 space
