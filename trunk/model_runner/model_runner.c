@@ -10,7 +10,72 @@
 # include "../deduplication_model/deduplication_model.h"
 # include "model_runner.h"
 
+/*
+   This function will run the model using a generated input:
+   1- the storage will be equalized. So all the machines will
+      store approximately the same number of files.
+   2- all the files will have the same popularity.
+*/
+double run_with_same_popularity_equalized_storage(
+                                double duplication_level,
+                                int popularity,
+                                int number_of_files,
+                                int number_of_machines,
+                                double remote_access_time,
+                                double local_access_time);
 
+/*
+   This function will run the model using a generated input:
+   1- the storage will be equalized. So all the machines will
+      store approximately the same number of files. 
+   2- the files will have linear popularity. So the i-th file stored
+      in a machine will have popularity equal to i*popularity_factor
+*/
+double run_with_linear_popularity_equalized_storage(
+                                double duplication_level,
+                                int popularity_factor,
+                                int number_of_files,
+                                int number_of_machines,
+                                double remote_access_time,
+                                double local_access_time);
+
+
+/*
+   This function will run the model using a generated input:
+   1- the storage will be equalized. So all the machines will
+      store approximately the same number of files.
+   2- all the files will have the same popularity.
+
+   The output will be the impact in the access of the files
+   stored in the given machine.
+*/
+double run_with_same_popularity_impact_on_machine(
+                                double duplication_level,
+                                int popularity_factor,
+                                int number_of_files,
+                                int number_of_machines,
+                                double remote_access_time,
+                                double local_access_time, 
+                                int machine);
+
+
+/*
+   This function will run the model using a generated input
+   1- the storage will be equalized. So all the machines will
+      store approximately the same number of files.
+   2- all the files will have the same popularity.
+
+   The output will be a pointer to an array that stores the 
+   impact in the access of the files stored in each machine.
+*/
+double *run_with_same_popularity_in_all_machines(
+                                double duplication_level,
+                                int popularity,
+                                int number_of_files,
+                                int number_of_machines,
+                                double remote_access_time,
+                                double local_access_time, 
+                                int *number_of_duplicated_files_in_machines);
 
 /*
    MODEL_RUNNER_ARGS functions
