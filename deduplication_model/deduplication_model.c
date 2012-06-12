@@ -103,6 +103,24 @@ double time_access_impact_per_operation(
 	return (total_accesses == 0) ? 0 : (total_impact/total_accesses);
 }
 
+double get_time_after_deduplication(FILE_ALLOCATION *allocation_initial_system,
+				    FILE_ALLOCATION *allocation_final_system,
+				    FILE_SIMILARITY *file_similarity,
+				    FILE_POPULARITY *file_popularity,
+				    int file, 
+				    double remote_access_time,
+			            double local_access_time)
+{
+	int file_was_deleted = (allocation_final_system->machines[file] == -1);
+	int remote_access = file_was_deleted && 
+			!there_is_similar_file_on_machine_after_deduplication(file_similarity,
+				      allocation_initial_system, 
+				      allocation_final_system, 
+				      file);
+
+	return (remote_access ? remote_access_time*file_popularity->popularity[file]:
+				 local_access_time*file_popularity->popularity[file]);
+}
 
 double time_access_impact_per_operation_on_machine(     
                                 FILE_ALLOCATION *allocation_initial_system, 
@@ -134,23 +152,15 @@ double time_access_impact_per_operation_on_machine(
 	{
 		if (allocation_initial_system->machines[file] == machine)
 		{
-			int file_was_deleted = (allocation_final_system->machines[file] == -1);
-			total_number_of_operations += file_popularity->popularity[file];			
-		
+			total_number_of_operations += file_popularity->popularity[file];	
 			time_before_deduplication = local_access_time*file_popularity->popularity[file];
-
-			if (file_was_deleted && 
-				!there_is_similar_file_on_machine_after_deduplication(file_similarity,
-							      allocation_initial_system, 
-							      allocation_final_system, 
-							      file))
-			{
-				time_after_deduplication = remote_access_time*file_popularity->popularity[file];
-			}
-			else
-			{
-				time_after_deduplication = local_access_time*file_popularity->popularity[file];
-			}
+			time_after_deduplication = get_time_after_deduplication(allocation_initial_system,
+				    allocation_final_system,
+				    file_similarity,
+				    file_popularity,
+				    file, 
+				    remote_access_time,
+			            local_access_time);
 			
 			time_access_impact += (time_after_deduplication - time_before_deduplication);
 		}
