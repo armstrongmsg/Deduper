@@ -22,7 +22,8 @@ double run_with_same_popularity_equalized_storage(
                                 int number_of_files,
                                 int number_of_machines,
                                 double remote_access_time,
-                                double local_access_time);
+                                double local_access_time, 
+				int deduplicate_randomically);
 
 /*
    This function will run the model using a generated input:
@@ -37,7 +38,8 @@ double run_with_linear_popularity_equalized_storage(
                                 int number_of_files,
                                 int number_of_machines,
                                 double remote_access_time,
-                                double local_access_time);
+                                double local_access_time, 
+				int deduplicate_randomically);
 
 
 /*
@@ -56,7 +58,8 @@ double run_with_same_popularity_impact_on_machine(
                                 int number_of_machines,
                                 double remote_access_time,
                                 double local_access_time, 
-                                int machine);
+                                int machine, 
+				int deduplicate_randomically);
 
 
 /*
@@ -75,6 +78,7 @@ double *run_with_same_popularity_in_all_machines(
                                 int number_of_machines,
                                 double remote_access_time,
                                 double local_access_time, 
+				int deduplicate_randomically,
                                 int *number_of_duplicated_files_in_machines);
 
 /*
@@ -117,7 +121,7 @@ MODEL_RUNNER_ARGS *construct_model_runner_args(
 	new_args->number_of_machines = number_of_machines;
 	new_args->remote_access_time = remote_access_time;
 	new_args->local_access_time = local_access_time;
-	new_args->duplication_level = duplication_level;
+	new_args->deduplicate_randomically = deduplicate_randomically;
 	new_args->machine = machine;	
 	new_args->popularity_factor = popularity_factor;
 	new_args->number_of_duplicated_files = number_of_duplicated_files; 
@@ -191,7 +195,8 @@ MODEL_RUNNER_RESULTS *run_model(MODEL_RUNNER_ARGS *args)
 						args->number_of_files,
 						args->number_of_machines,
 						args->remote_access_time,
-						args->local_access_time);	
+						args->local_access_time, 
+						args->deduplicate_randomically);	
 		} break;
 		
 		case SAME_POPULARITY_EQUALIZED_STORAGE_MACHINE:
@@ -203,7 +208,8 @@ MODEL_RUNNER_RESULTS *run_model(MODEL_RUNNER_ARGS *args)
 						args->number_of_machines,
 						args->remote_access_time,
 						args->local_access_time,
-						args->machine);
+						args->machine, 
+						args->deduplicate_randomically);
 		} break;	
 
 		case SAME_POPULARITY_EQUALIZED_STORAGE_ALL_MACHINES:
@@ -216,6 +222,7 @@ MODEL_RUNNER_RESULTS *run_model(MODEL_RUNNER_ARGS *args)
 						args->number_of_machines,
 						args->remote_access_time,
 						args->local_access_time,
+						args->deduplicate_randomically,
 						args->number_of_duplicated_files);	
 		} break;
 
@@ -227,7 +234,8 @@ MODEL_RUNNER_RESULTS *run_model(MODEL_RUNNER_ARGS *args)
 						args->number_of_files,
 						args->number_of_machines,
 						args->remote_access_time,
-						args->local_access_time);
+						args->local_access_time, 
+						args->deduplicate_randomically);
 		} break;
 	}
 
@@ -248,7 +256,8 @@ double run_with_same_popularity_equalized_storage(
                                 int number_of_files,
                                 int number_of_machines,
                                 double remote_access_time,
-                                double local_access_time)
+                                double local_access_time, 
+				int randomically)
 {
 	FILE_ALLOCATION *initial_file_allocation = NULL;
 	FILE_SIMILARITY *file_similarity = NULL;
@@ -278,9 +287,9 @@ double run_with_same_popularity_equalized_storage(
 						popularity);
 
 	puts("generating final file allocation...");
-	final_file_allocation = 						
-		deduplicate(initial_file_allocation, 
-				file_similarity);
+	final_file_allocation = ( randomically ?						
+		deduplicate_randomically(initial_file_allocation, file_similarity) :
+		deduplicate(initial_file_allocation, file_similarity) );
 
 	double impact = time_access_impact_per_operation(
 				initial_file_allocation, 
@@ -304,7 +313,8 @@ double run_with_linear_popularity_equalized_storage(
                                 int number_of_files,
                                 int number_of_machines,
                                 double remote_access_time,
-                                double local_access_time)
+                                double local_access_time,
+				int randomically)
 {
 	FILE_ALLOCATION *initial_file_allocation = NULL;
 	FILE_SIMILARITY *file_similarity = NULL;
@@ -334,9 +344,9 @@ double run_with_linear_popularity_equalized_storage(
 						initial_file_allocation);
 
 	puts("generating final file allocation...");
-	final_file_allocation = 						
-		deduplicate(initial_file_allocation, 
-				file_similarity);
+	final_file_allocation = ( randomically ?						
+		deduplicate_randomically(initial_file_allocation, file_similarity) :
+		deduplicate(initial_file_allocation, file_similarity) );
 
 	double impact =  time_access_impact_per_operation(
 				initial_file_allocation, 
@@ -361,6 +371,7 @@ double *run_with_same_popularity_in_all_machines(
                                 int number_of_machines,
                                 double remote_access_time,
                                 double local_access_time, 
+				int randomically,
 				int *number_of_duplicated_files_in_machines)
 {
 	FILE_ALLOCATION *initial_file_allocation = NULL;
@@ -398,7 +409,9 @@ double *run_with_same_popularity_in_all_machines(
 						popularity);
 
 	puts("generating final file allocation...");
-	final_file_allocation = deduplicate(initial_file_allocation, file_similarity);
+	final_file_allocation = ( randomically ?						
+		deduplicate_randomically(initial_file_allocation, file_similarity) :
+		deduplicate(initial_file_allocation, file_similarity) );
 
 	for (machine = 0 ; machine < number_of_machines; machine++)
 	{
@@ -428,7 +441,8 @@ double run_with_same_popularity_impact_on_machine(
                                 int number_of_machines,
                                 double remote_access_time,
                                 double local_access_time,
-                                int machine)
+                                int machine, 
+				int randomically)
 {
 	FILE_ALLOCATION *initial_file_allocation = NULL;
 	FILE_SIMILARITY *file_similarity = NULL;
@@ -459,7 +473,9 @@ double run_with_same_popularity_impact_on_machine(
 						popularity);
 
 	puts("generating final file allocation...");
-	final_file_allocation = deduplicate(initial_file_allocation, file_similarity);
+	final_file_allocation = ( randomically ?						
+		deduplicate_randomically(initial_file_allocation, file_similarity) :
+		deduplicate(initial_file_allocation, file_similarity) );
 
 	double impact =  time_access_impact_per_operation_on_machine(
 			 initial_file_allocation,
