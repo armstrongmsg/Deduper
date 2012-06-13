@@ -12,12 +12,8 @@
 	for each file on file_allocation do
 		if file exists on new_allocation then
 			get the files similar to file
-			
-			for each similar file do
-				if similar file != file then
-					exclude it from new_allocation
-				endif
-			endfor
+			choose the file to keep on the system
+			exclude all files from the system except the file chosen to be kept		
 		endif
 	endfor
 */	
