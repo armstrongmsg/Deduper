@@ -78,8 +78,7 @@ double *run_with_same_popularity_in_all_machines(
                                 int number_of_machines,
                                 double remote_access_time,
                                 double local_access_time, 
-				int deduplicate_randomically,
-                                int *number_of_duplicated_files_in_machines);
+				int deduplicate_randomically);
 
 /*
    MODEL_RUNNER_ARGS functions
@@ -95,8 +94,7 @@ MODEL_RUNNER_ARGS *construct_model_runner_args(
                 double local_access_time,
                 int deduplicate_randomically, 
 		int machine, 
-		int popularity_factor, 
-		int *number_of_duplicated_files)
+		int popularity_factor)
 {
 	MODEL_RUNNER_ARGS *new_args = NULL;
 
@@ -124,7 +122,6 @@ MODEL_RUNNER_ARGS *construct_model_runner_args(
 	new_args->deduplicate_randomically = deduplicate_randomically;
 	new_args->machine = machine;	
 	new_args->popularity_factor = popularity_factor;
-	new_args->number_of_duplicated_files = number_of_duplicated_files; 
 
 	return new_args;
 }
@@ -132,13 +129,6 @@ MODEL_RUNNER_ARGS *construct_model_runner_args(
 void destruct_model_runner_args(MODEL_RUNNER_ARGS *model_runner_args)
 {
 	assert(model_runner_args);
-
-	if (model_runner_args->number_of_duplicated_files != NULL)
-	{
-
-		free(model_runner_args->number_of_duplicated_files);
-	}
-
 	free(model_runner_args);
 }
 
@@ -222,8 +212,7 @@ MODEL_RUNNER_RESULTS *run_model(MODEL_RUNNER_ARGS *args)
 						args->number_of_machines,
 						args->remote_access_time,
 						args->local_access_time,
-						args->deduplicate_randomically,
-						args->number_of_duplicated_files);	
+						args->deduplicate_randomically);
 		} break;
 
 		case LINEAR_POPULARITY_EQUALIZED_STORAGE:
@@ -371,8 +360,7 @@ double *run_with_same_popularity_in_all_machines(
                                 int number_of_machines,
                                 double remote_access_time,
                                 double local_access_time, 
-				int randomically,
-				int *number_of_duplicated_files_in_machines)
+				int randomically)
 {
 	FILE_ALLOCATION *initial_file_allocation = NULL;
 	FILE_SIMILARITY *file_similarity = NULL;

@@ -32,7 +32,6 @@ typedef struct
 	int deduplicate_randomically;
 	int machine;
 	int popularity_factor;
-	int *number_of_duplicated_files;
 } MODEL_RUNNER_ARGS;
 
 typedef struct
@@ -51,8 +50,7 @@ MODEL_RUNNER_ARGS *construct_model_runner_args(
 		double local_access_time,
 		int deduplicate_randomically,
 		int machine,
-		int popularity_factor, 
-		int *number_of_duplicated_files);
+		int popularity_factor);
 
 void destruct_model_runner_args(MODEL_RUNNER_ARGS *model_runner_args);
 
