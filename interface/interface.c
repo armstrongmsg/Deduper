@@ -270,10 +270,9 @@ void run(int argc, char *argv[])
 	FILE *output_file = NULL;
 	char *model_runner_mode_name = NULL;
 	MODEL_RUNNER_MODE mode = 0;
-	int *number_of_duplicatas_on_machines = NULL;
 
 	model_runner_args = construct_model_runner_args(SAME_POPULARITY_EQUALIZED_STORAGE_ALL_MACHINES,
-				    -1, -1, -1, -1, -1, -1, -1, -1, -1, NULL);
+				    -1, -1, -1, -1, -1, -1, -1, -1, -1);
 
 	check_number_of_arguments(argc);	
 
@@ -296,8 +295,6 @@ void run(int argc, char *argv[])
 
 	check_all_arguments_were_given(model_runner_args);
 
-	model_runner_args->number_of_duplicated_files = number_of_duplicatas_on_machines;
-	
 	model_runner_results = run_model(model_runner_args);	
 
 	print_results(model_runner_args, model_runner_results, output_file);
