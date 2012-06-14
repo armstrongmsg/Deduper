@@ -125,6 +125,11 @@ MODEL_RUNNER_ARGS *construct_model_runner_args(
 
 	return new_args;
 }
+			
+MODEL_RUNNER_ARGS *construct_empty_model_runner_args(void)
+{
+	return construct_model_runner_args(0, -1, -1, -1, -1, -1, -1, -1, -1, -1);
+}
 
 void destruct_model_runner_args(MODEL_RUNNER_ARGS *model_runner_args)
 {
