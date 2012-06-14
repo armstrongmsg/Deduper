@@ -52,6 +52,8 @@ MODEL_RUNNER_ARGS *construct_model_runner_args(
 		int machine,
 		int popularity_factor);
 
+MODEL_RUNNER_ARGS *construct_empty_model_runner_args(void);
+
 void destruct_model_runner_args(MODEL_RUNNER_ARGS *model_runner_args);
 
 MODEL_RUNNER_RESULTS *construct_model_runner_results(
