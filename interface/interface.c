@@ -2,6 +2,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include <assert.h>
+# include "../timer/timer.h"
 # include "../model_runner/model_runner.h"
 # include "interface.h"
 
@@ -11,6 +12,8 @@ typedef enum {number_of_files, number_of_machines,
 		   deduplicate_randomically} ARGUMENT_TYPE;
 
 char *argument_representation[] = {"f", "m", "d", "r", "l", "p", "a"};
+
+TIMES *times = NULL;
 
 void stop(char *message)
 {
@@ -271,6 +274,10 @@ void run(int argc, char *argv[])
 	char *model_runner_mode_name = NULL;
 	MODEL_RUNNER_MODE mode = 0;
 
+	times = construct_empty_times();
+
+	times->time_start_running = get_time_millis();
+
 	model_runner_args = construct_model_runner_args(SAME_POPULARITY_EQUALIZED_STORAGE_ALL_MACHINES,
 				    -1, -1, -1, -1, -1, -1, -1, -1, -1);
 
@@ -298,8 +305,13 @@ void run(int argc, char *argv[])
 	model_runner_results = run_model(model_runner_args);	
 
 	print_results(model_runner_args, model_runner_results, output_file);
+
+	times->time_finish_running = get_time_millis();
+
+	print_times(times);
 	
 	destruct_model_runner_args(model_runner_args);
 	destruct_model_runner_results(model_runner_results);
+	destruct_times(times);
 	fclose(output_file);
 }
