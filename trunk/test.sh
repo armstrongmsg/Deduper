@@ -9,7 +9,7 @@
 # This script integrates the tests running
 #
 
-files="deduplication_model deduplicator file_allocation file_popularity file_similarity matrixes model_input_generator model_runner" 
+files="deduplication_model deduplicator file_allocation file_popularity file_similarity matrixes model_input_generator model_runner timer" 
 
 function space()
 {

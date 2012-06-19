@@ -8,7 +8,10 @@
 # include "../model_input_generator/model_input_generator.h"
 # include "../deduplicator/deduplicator.h"
 # include "../deduplication_model/deduplication_model.h"
+# include "../timer/timer.h"
 # include "model_runner.h"
+
+extern TIMES *times;
 
 /*
    This function will run the model using a generated input:
@@ -267,23 +270,27 @@ double run_with_same_popularity_equalized_storage(
 
 	puts("generating initial file allocation...");
 	initial_file_allocation = 
-		generate_file_allocation(number_of_files, 
-						number_of_machines);	
+		generate_file_allocation(number_of_files, 	
+					number_of_machines);	
+	times->time_after_generate_allocation = get_time_millis();
 
 	puts("generating file similarity...");
 	file_similarity = 
 		generate_file_similarity(initial_file_allocation, 
 						duplication_level);
+	times->time_after_generate_similarity = get_time_millis();
 
 	puts("generating file popularity...");
 	file_popularity = 
 		generate_file_popularity_with_equal_value(number_of_files, 
 						popularity);
+	times->time_after_generate_popularity = get_time_millis();
 
 	puts("generating final file allocation...");
 	final_file_allocation = ( randomically ?						
 		deduplicate_randomically(initial_file_allocation, file_similarity) :
 		deduplicate(initial_file_allocation, file_similarity) );
+	times->time_after_deduplicating = get_time_millis();
 
 	double impact = time_access_impact_per_operation(
 				initial_file_allocation, 
@@ -292,7 +299,8 @@ double run_with_same_popularity_equalized_storage(
 				file_popularity, 
 				remote_access_time, 
 				local_access_time);	
-
+	times->time_after_calculating_impact = get_time_millis();
+	
 	destruct_file_allocation(initial_file_allocation);
 	destruct_file_allocation(final_file_allocation);
 	destruct_file_popularity(file_popularity);
@@ -326,21 +334,25 @@ double run_with_linear_popularity_equalized_storage(
 	initial_file_allocation = 
 		generate_file_allocation(number_of_files, 
 						number_of_machines);	
+        times->time_after_generate_allocation = get_time_millis();
 
 	puts("generating file similarity...");
 	file_similarity = 
 		generate_file_similarity(initial_file_allocation, 
 						duplication_level);
+	times->time_after_generate_similarity = get_time_millis();
 
 	puts("generating file popularity...");
 	file_popularity = 
 		generate_file_popularity_with_linear_values(popularity_factor,
 						initial_file_allocation);
+	times->time_after_generate_popularity = get_time_millis();
 
 	puts("generating final file allocation...");
 	final_file_allocation = ( randomically ?						
 		deduplicate_randomically(initial_file_allocation, file_similarity) :
 		deduplicate(initial_file_allocation, file_similarity) );
+        times->time_after_deduplicating = get_time_millis();
 
 	double impact =  time_access_impact_per_operation(
 				initial_file_allocation, 
@@ -349,6 +361,8 @@ double run_with_linear_popularity_equalized_storage(
 				file_popularity, 
 				remote_access_time, 
 				local_access_time);	
+	
+	times->time_after_calculating_impact = get_time_millis();
 	
 	destruct_file_allocation(initial_file_allocation);
 	destruct_file_allocation(final_file_allocation);
@@ -390,21 +404,25 @@ double *run_with_same_popularity_in_all_machines(
 	initial_file_allocation = 
 		generate_file_allocation(number_of_files, 
 						number_of_machines);	
+	times->time_after_generate_allocation = get_time_millis();
 
 	puts("generating file similarity...");
 	file_similarity = 
 		generate_file_similarity(initial_file_allocation, 
 						duplication_level);
+	times->time_after_generate_similarity = get_time_millis();
 
 	puts("generating file popularity...");
 	file_popularity = 
 		generate_file_popularity_with_equal_value(number_of_files, 
 						popularity);
+	times->time_after_generate_popularity = get_time_millis();
 
 	puts("generating final file allocation...");
 	final_file_allocation = ( randomically ?						
 		deduplicate_randomically(initial_file_allocation, file_similarity) :
 		deduplicate(initial_file_allocation, file_similarity) );
+        times->time_after_deduplicating = get_time_millis();
 
 	for (machine = 0 ; machine < number_of_machines; machine++)
 	{
@@ -418,6 +436,8 @@ double *run_with_same_popularity_in_all_machines(
 			 machine);
 		impacts[machine] = impact; 
 	}
+
+	times->time_after_calculating_impact = get_time_millis();
 
 	destruct_file_allocation(initial_file_allocation);
 	destruct_file_allocation(final_file_allocation);
@@ -454,21 +474,25 @@ double run_with_same_popularity_impact_on_machine(
 	initial_file_allocation = 
 		generate_file_allocation(number_of_files, 
 						number_of_machines);	
+        times->time_after_generate_allocation = get_time_millis();
 	
 	puts("generating file similarity...");
 	file_similarity = 
 		generate_file_similarity(initial_file_allocation, 
 						duplication_level);
+	times->time_after_generate_similarity = get_time_millis();
 
 	puts("generating file popularity...");
 	file_popularity = 
 		generate_file_popularity_with_equal_value(number_of_files, 
 						popularity);
+	times->time_after_generate_popularity = get_time_millis();
 
 	puts("generating final file allocation...");
 	final_file_allocation = ( randomically ?						
 		deduplicate_randomically(initial_file_allocation, file_similarity) :
 		deduplicate(initial_file_allocation, file_similarity) );
+        times->time_after_deduplicating = get_time_millis();
 
 	double impact =  time_access_impact_per_operation_on_machine(
 			 initial_file_allocation,
@@ -478,6 +502,7 @@ double run_with_same_popularity_impact_on_machine(
 			 remote_access_time,
 			 local_access_time,
 			 machine);
+	times->time_after_calculating_impact = get_time_millis();
 
 	destruct_file_allocation(initial_file_allocation);
 	destruct_file_allocation(final_file_allocation);
