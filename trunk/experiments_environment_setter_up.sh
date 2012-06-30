@@ -11,8 +11,10 @@
 
 experiment_environment_directory="experiments_environment"
 
-rm -f $experiment_environment_directory/binaries/*
-rm -f $experiment_environment_directory/results_files/*
+rm -rf $experiment_environment_directory
+
+mkdir $experiment_environment_directory/binaries
+mkdir $experiment_environment_directory/results_files
 
 cp deduper experiment.sh $experiment_environment_directory/binaries
 cp results_summarizer.py $experiment_environment_directory/results_files
