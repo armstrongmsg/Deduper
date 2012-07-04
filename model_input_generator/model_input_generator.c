@@ -38,7 +38,7 @@ FILE_ALLOCATION *generate_file_allocation(int number_of_files, int number_of_mac
 	return new_file_allocation;
 }
 
-FILE_POPULARITY *generate_file_popularity_with_equal_value(int number_of_files, int number_of_machines, int popularity)
+FILE_POPULARITY *generate_file_popularity_with_equal_value(int number_of_files, int number_of_machines, int popularity, FILE_ALLOCATION *file_allocation)
 {
 	FILE_POPULARITY *file_popularity = NULL;
 	int i = 0;
@@ -46,12 +46,23 @@ FILE_POPULARITY *generate_file_popularity_with_equal_value(int number_of_files, 
 	assert(number_of_files > 0);
 	assert(number_of_machines > 0);
 	assert(file_popularity >= 0);
+	assert(file_allocation);
 
 	file_popularity = construct_file_popularity(number_of_files, number_of_machines);
 
 	for ( ; i < number_of_files*number_of_machines; i++)
 	{
-		file_popularity->popularity[i] = popularity;
+		int file = i/number_of_machines;
+		int machine = i%number_of_machines;
+
+		if (file_allocation->machines[file] == machine)
+		{
+			file_popularity->popularity[i] = popularity;	
+		}
+		else
+		{
+			file_popularity->popularity[i] = 0;
+		}	
 	}
 
 	return file_popularity;

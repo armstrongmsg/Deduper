@@ -60,11 +60,13 @@
 FILE_ALLOCATION *generate_file_allocation(int number_of_files, int number_of_machines);
 
 /*
-    Constructs a FILE_POPULARITY with the given number of files and the given number o machines. 
-    All the files will have the same popularity.
+    Constructs a FILE_POPULARITY with the given number of files and the given number of machines. 
+    The popularities are constructed to simulate a situation which all file is only accessed locally, that is,
+    the popularity of the file in the other machines is 0.
     The returned struct must be destructed with destruct_file_popularity.
 */
-FILE_POPULARITY *generate_file_popularity_with_equal_value(int number_of_files, int number_of_machines, int popularity);
+FILE_POPULARITY *generate_file_popularity_with_equal_value(int number_of_files, int number_of_machines, int popularity, 
+								FILE_ALLOCATION *file_allocation);
 
 /*
     Constructs a FILE_SIMILARITY, based on the given FILE_ALLOCATION 
