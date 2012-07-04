@@ -17,22 +17,26 @@
 # include <string.h>
 # include "file_popularity.h"
 
-FILE_POPULARITY *construct_file_popularity(int number_of_files)
+FILE_POPULARITY *construct_file_popularity(int number_of_files, int number_of_machines)
 {
+	int popularity_size = 0;
 	assert(number_of_files > 0);
-	
+	assert(number_of_machines > 0);	
+
 	FILE_POPULARITY *new_file_popularity = 
 		(FILE_POPULARITY *) malloc(sizeof(FILE_POPULARITY));
 
 	assert(new_file_popularity);
 	
-	int *popularity = (int *) malloc(sizeof(int)*number_of_files);
-	memset(popularity, '\0', sizeof(int)*number_of_files);
+	popularity_size = sizeof(int)*number_of_files*number_of_machines;
+	int *popularity = (int *) malloc(popularity_size);
+	memset(popularity, '\0', popularity_size);
 	
 	assert(popularity);
 
 	new_file_popularity->popularity = popularity;
 	new_file_popularity->number_of_files = number_of_files;
+	new_file_popularity->number_of_machines = number_of_machines;
 
 	return new_file_popularity;
 }

@@ -16,8 +16,7 @@
 
 enum mode {SAME_POPULARITY_EQUALIZED_STORAGE, 
 	   SAME_POPULARITY_EQUALIZED_STORAGE_MACHINE,
-	   SAME_POPULARITY_EQUALIZED_STORAGE_ALL_MACHINES,
-	   LINEAR_POPULARITY_EQUALIZED_STORAGE};
+	   SAME_POPULARITY_EQUALIZED_STORAGE_ALL_MACHINES};
 typedef enum mode MODEL_RUNNER_MODE;
 
 typedef struct
@@ -31,7 +30,6 @@ typedef struct
 	double local_access_time;
 	int deduplicate_randomically;
 	int machine;
-	int popularity_factor;
 } MODEL_RUNNER_ARGS;
 
 typedef struct
@@ -49,8 +47,7 @@ MODEL_RUNNER_ARGS *construct_model_runner_args(
 		double remote_access_time,
 		double local_access_time,
 		int deduplicate_randomically,
-		int machine,
-		int popularity_factor);
+		int machine);
 
 MODEL_RUNNER_ARGS *construct_empty_model_runner_args(void);
 

@@ -21,7 +21,7 @@ void time_access_impact_per_operation_test_1()
 	FILE_ALLOCATION *allocation_initial_system = construct_file_allocation(number_of_files);
 	FILE_ALLOCATION *allocation_final_system = construct_file_allocation(number_of_files);
 	FILE_SIMILARITY *file_similarity = construct_file_similarity(number_of_files);
-	FILE_POPULARITY *file_popularity = construct_file_popularity(number_of_files);
+	FILE_POPULARITY *file_popularity = construct_file_popularity(number_of_files, 2);
 	int local_access_time = 0;
 	int remote_access_time = 1;
 
@@ -80,7 +80,7 @@ void time_access_impact_per_operation_test_2()
 	FILE_ALLOCATION *allocation_initial_system = construct_file_allocation(number_of_files);
 	FILE_ALLOCATION *allocation_final_system = construct_file_allocation(number_of_files);
 	FILE_SIMILARITY *file_similarity = construct_file_similarity(number_of_files);
-	FILE_POPULARITY *file_popularity = construct_file_popularity(number_of_files);
+	FILE_POPULARITY *file_popularity = construct_file_popularity(number_of_files, 2);
 	int local_access_time = 0;
 	int remote_access_time = 1;
 	double impact_per_operation = 0.0;
@@ -156,7 +156,7 @@ void time_access_impact_per_operation_test_3()
 	FILE_ALLOCATION *allocation_initial_system = construct_file_allocation(number_of_files);
 	FILE_ALLOCATION *allocation_final_system = construct_file_allocation(number_of_files);
 	FILE_SIMILARITY *file_similarity = construct_file_similarity(number_of_files);
-	FILE_POPULARITY *file_popularity = construct_file_popularity(number_of_files);
+	FILE_POPULARITY *file_popularity = construct_file_popularity(number_of_files, 3);
 	int local_access_time = 0;
 	int remote_access_time = 1;
 	double impact_per_operation = 0.0;
@@ -273,7 +273,7 @@ void time_access_impact_per_operation_on_machine_test_1(void)
 	FILE_ALLOCATION *allocation_initial_system = construct_file_allocation(number_of_files);
 	FILE_ALLOCATION *allocation_final_system = construct_file_allocation(number_of_files);
 	FILE_SIMILARITY *file_similarity = construct_file_similarity(number_of_files);
-	FILE_POPULARITY *file_popularity = construct_file_popularity(number_of_files);
+	FILE_POPULARITY *file_popularity = construct_file_popularity(number_of_files, 3);
 	int local_access_time = 0;
 	int remote_access_time = 1;
 	double impact_per_operation = 0.0;
@@ -414,7 +414,7 @@ void time_access_impact_per_operation_on_machine_test_2(void)
 	FILE_ALLOCATION *allocation_initial_system = construct_file_allocation(number_of_files);
 	FILE_ALLOCATION *allocation_final_system = construct_file_allocation(number_of_files);
 	FILE_SIMILARITY *file_similarity = construct_file_similarity(number_of_files);
-	FILE_POPULARITY *file_popularity = construct_file_popularity(number_of_files);
+	FILE_POPULARITY *file_popularity = construct_file_popularity(number_of_files, 3);
 	int local_access_time = 0;
 	int remote_access_time = 1;
 	double impact_per_operation = 0.0;
@@ -556,7 +556,7 @@ void time_access_impact_per_operation_on_machine_test_3(void)
 	FILE_ALLOCATION *allocation_initial_system = construct_file_allocation(number_of_files);
 	FILE_ALLOCATION *allocation_final_system = construct_file_allocation(number_of_files);
 	FILE_SIMILARITY *file_similarity = construct_file_similarity(number_of_files);
-	FILE_POPULARITY *file_popularity = construct_file_popularity(number_of_files);
+	FILE_POPULARITY *file_popularity = construct_file_popularity(number_of_files, 3);
 	int local_access_time = 0;
 	int remote_access_time = 1;
 	double impact_per_operation = 0.0;
@@ -696,7 +696,7 @@ void time_access_impact_per_operation_on_machine_test_4(void)
 	FILE_ALLOCATION *allocation_initial_system = construct_file_allocation(number_of_files);
 	FILE_ALLOCATION *allocation_final_system = construct_file_allocation(number_of_files);
 	FILE_SIMILARITY *file_similarity = construct_file_similarity(number_of_files);
-	FILE_POPULARITY *file_popularity = construct_file_popularity(number_of_files);
+	FILE_POPULARITY *file_popularity = construct_file_popularity(number_of_files, 3);
 	int local_access_time = 100;
 	int remote_access_time = 1000;
 	double impact_per_operation = 0.0;
@@ -836,7 +836,7 @@ void time_access_impact_per_operation_on_machine_test_5(void)
 	FILE_ALLOCATION *allocation_initial_system = construct_file_allocation(number_of_files);
 	FILE_ALLOCATION *allocation_final_system = construct_file_allocation(number_of_files);
 	FILE_SIMILARITY *file_similarity = construct_file_similarity(number_of_files);
-	FILE_POPULARITY *file_popularity = construct_file_popularity(number_of_files);
+	FILE_POPULARITY *file_popularity = construct_file_popularity(number_of_files, 3);
 	int local_access_time = 100;
 	int remote_access_time = 1000;
 	double impact_per_operation = 0.0;
@@ -963,7 +963,7 @@ void time_access_impact_per_operation_on_machine_test_6(void)
 	FILE_ALLOCATION *allocation_initial_system = construct_file_allocation(number_of_files);
 	FILE_ALLOCATION *allocation_final_system = construct_file_allocation(number_of_files);
 	FILE_SIMILARITY *file_similarity = construct_file_similarity(number_of_files);
-	FILE_POPULARITY *file_popularity = construct_file_popularity(number_of_files);
+	FILE_POPULARITY *file_popularity = construct_file_popularity(number_of_files, 3);
 	int local_access_time = 100;
 	int remote_access_time = 1000;
 	double impact_per_operation = 0.0;

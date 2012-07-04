@@ -136,7 +136,6 @@ void get_argument_value(MODEL_RUNNER_ARGS *args,
 			}
 
 			args->popularity = popularity;
-			args->popularity_factor = popularity;
 		} break;
 
 		case machine:
@@ -192,19 +191,6 @@ void check_all_arguments_were_given(MODEL_RUNNER_ARGS *args)
 				some_arguments_are_missing();
 			}
 		} break;
-		
-		case LINEAR_POPULARITY_EQUALIZED_STORAGE:
-		{
-			if (args->number_of_files == -1     ||
-	    		    args->number_of_machines == -1  ||
-	    		    args->duplication_level == -1   ||
-	    		    args->remote_access_time == -1  ||
-	    		    args->local_access_time == -1   ||
-	    		    args->popularity_factor == -1)
-			{
-				some_arguments_are_missing();
-			}	
-		} break;
 	}
 }
 
@@ -217,7 +203,6 @@ MODEL_RUNNER_MODE get_model_runner_mode_from_string(char *string)
 		case '0': mode = SAME_POPULARITY_EQUALIZED_STORAGE; break;
 		case '1': mode = SAME_POPULARITY_EQUALIZED_STORAGE_MACHINE; break;
 		case '2': mode = SAME_POPULARITY_EQUALIZED_STORAGE_ALL_MACHINES; break;
-		case '3': mode = LINEAR_POPULARITY_EQUALIZED_STORAGE; break;
 		default : invalid_arguments();
 	}
 	
@@ -231,11 +216,6 @@ void print_results(MODEL_RUNNER_ARGS *model_runner_args, MODEL_RUNNER_RESULTS *m
 		case SAME_POPULARITY_EQUALIZED_STORAGE:
 		{
 
-		}
-
-		case LINEAR_POPULARITY_EQUALIZED_STORAGE:
-		{
-			
 		}
 
 		case SAME_POPULARITY_EQUALIZED_STORAGE_MACHINE:
@@ -279,7 +259,7 @@ void run(int argc, char *argv[])
 	times->time_start_running = get_time_millis();
 
 	model_runner_args = construct_model_runner_args(SAME_POPULARITY_EQUALIZED_STORAGE_ALL_MACHINES,
-				    -1, -1, -1, -1, -1, -1, -1, -1, -1);
+				    -1, -1, -1, -1, -1, -1, -1, -1);
 
 	check_number_of_arguments(argc);	
 
