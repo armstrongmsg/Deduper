@@ -28,22 +28,6 @@ double run_with_same_popularity_equalized_storage(
                                 double local_access_time, 
 				int deduplicate_randomically);
 
-/*
-   This function will run the model using a generated input:
-   1- the storage will be equalized. So all the machines will
-      store approximately the same number of files. 
-   2- the files will have linear popularity. So the i-th file stored
-      in a machine will have popularity equal to i*popularity_factor
-*/
-double run_with_linear_popularity_equalized_storage(
-                                double duplication_level,
-                                int popularity_factor,
-                                int number_of_files,
-                                int number_of_machines,
-                                double remote_access_time,
-                                double local_access_time, 
-				int deduplicate_randomically);
-
 
 /*
    This function will run the model using a generated input:
@@ -96,8 +80,7 @@ MODEL_RUNNER_ARGS *construct_model_runner_args(
                 double remote_access_time,
                 double local_access_time,
                 int deduplicate_randomically, 
-		int machine, 
-		int popularity_factor)
+		int machine) 
 {
 	MODEL_RUNNER_ARGS *new_args = NULL;
 
@@ -109,7 +92,6 @@ MODEL_RUNNER_ARGS *construct_model_runner_args(
 	assert(local_access_time >= -1);
 	assert(deduplicate_randomically >= -1);
 	assert(machine >= -1);
-	assert(popularity_factor >= -1);
 
 	new_args = (MODEL_RUNNER_ARGS *) malloc(sizeof(MODEL_RUNNER_ARGS));
 
@@ -124,14 +106,13 @@ MODEL_RUNNER_ARGS *construct_model_runner_args(
 	new_args->local_access_time = local_access_time;
 	new_args->deduplicate_randomically = deduplicate_randomically;
 	new_args->machine = machine;	
-	new_args->popularity_factor = popularity_factor;
 
 	return new_args;
 }
 			
 MODEL_RUNNER_ARGS *construct_empty_model_runner_args(void)
 {
-	return construct_model_runner_args(0, -1, -1, -1, -1, -1, -1, -1, -1, -1);
+	return construct_model_runner_args(0, -1, -1, -1, -1, -1, -1, -1, -1);
 }
 
 void destruct_model_runner_args(MODEL_RUNNER_ARGS *model_runner_args)
@@ -222,18 +203,6 @@ MODEL_RUNNER_RESULTS *run_model(MODEL_RUNNER_ARGS *args)
 						args->local_access_time,
 						args->deduplicate_randomically);
 		} break;
-
-		case LINEAR_POPULARITY_EQUALIZED_STORAGE:
-		{
-			time_access_impact = run_with_linear_popularity_equalized_storage(
-						args->duplication_level,
-						args->popularity_factor,
-						args->number_of_files,
-						args->number_of_machines,
-						args->remote_access_time,
-						args->local_access_time, 
-						args->deduplicate_randomically);
-		} break;
 	}
 
 	results = construct_model_runner_results(time_access_impact, 
@@ -282,7 +251,8 @@ double run_with_same_popularity_equalized_storage(
 
 	puts("generating file popularity...");
 	file_popularity = 
-		generate_file_popularity_with_equal_value(number_of_files, 
+		generate_file_popularity_with_equal_value(number_of_files,
+						number_of_machines, 
 						popularity);
 	times->time_after_generate_popularity = get_time_millis();
 
@@ -306,69 +276,6 @@ double run_with_same_popularity_equalized_storage(
 	destruct_file_popularity(file_popularity);
 	destruct_file_similarity(file_similarity);	
 
-	return impact;
-}
-
-double run_with_linear_popularity_equalized_storage(
-                                double duplication_level,
-                                int popularity_factor,
-                                int number_of_files,
-                                int number_of_machines,
-                                double remote_access_time,
-                                double local_access_time,
-				int randomically)
-{
-	FILE_ALLOCATION *initial_file_allocation = NULL;
-	FILE_SIMILARITY *file_similarity = NULL;
-	FILE_POPULARITY *file_popularity = NULL;	
-	FILE_ALLOCATION *final_file_allocation = NULL; 
-	
-	assert(duplication_level >= 0);
-	assert(popularity_factor >= 0);
-	assert(number_of_files > 0);
-	assert(number_of_machines > 0);
-	assert(remote_access_time >= 0);
-	assert(local_access_time >= 0);	
-
-	puts("generating initial file allocation...");
-	initial_file_allocation = 
-		generate_file_allocation(number_of_files, 
-						number_of_machines);	
-        times->time_after_generate_allocation = get_time_millis();
-
-	puts("generating file similarity...");
-	file_similarity = 
-		generate_file_similarity(initial_file_allocation, 
-						duplication_level);
-	times->time_after_generate_similarity = get_time_millis();
-
-	puts("generating file popularity...");
-	file_popularity = 
-		generate_file_popularity_with_linear_values(popularity_factor,
-						initial_file_allocation);
-	times->time_after_generate_popularity = get_time_millis();
-
-	puts("generating final file allocation...");
-	final_file_allocation = ( randomically ?						
-		deduplicate_randomically(initial_file_allocation, file_similarity) :
-		deduplicate(initial_file_allocation, file_similarity) );
-        times->time_after_deduplicating = get_time_millis();
-
-	double impact =  time_access_impact_per_operation(
-				initial_file_allocation, 
-				final_file_allocation, 
-				file_similarity, 
-				file_popularity, 
-				remote_access_time, 
-				local_access_time);	
-	
-	times->time_after_calculating_impact = get_time_millis();
-	
-	destruct_file_allocation(initial_file_allocation);
-	destruct_file_allocation(final_file_allocation);
-	destruct_file_popularity(file_popularity);
-	destruct_file_similarity(file_similarity);	
-	
 	return impact;
 }
 
@@ -415,6 +322,7 @@ double *run_with_same_popularity_in_all_machines(
 	puts("generating file popularity...");
 	file_popularity = 
 		generate_file_popularity_with_equal_value(number_of_files, 
+						number_of_machines,
 						popularity);
 	times->time_after_generate_popularity = get_time_millis();
 
@@ -485,6 +393,7 @@ double run_with_same_popularity_impact_on_machine(
 	puts("generating file popularity...");
 	file_popularity = 
 		generate_file_popularity_with_equal_value(number_of_files, 
+						number_of_machines,
 						popularity);
 	times->time_after_generate_popularity = get_time_millis();
 

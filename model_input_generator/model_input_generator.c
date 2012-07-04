@@ -38,75 +38,24 @@ FILE_ALLOCATION *generate_file_allocation(int number_of_files, int number_of_mac
 	return new_file_allocation;
 }
 
-FILE_POPULARITY *generate_file_popularity_with_equal_value(int number_of_files, int popularity)
+FILE_POPULARITY *generate_file_popularity_with_equal_value(int number_of_files, int number_of_machines, int popularity)
 {
 	FILE_POPULARITY *file_popularity = NULL;
 	int i = 0;
 
 	assert(number_of_files > 0);
+	assert(number_of_machines > 0);
 	assert(file_popularity >= 0);
 
-	file_popularity = construct_file_popularity(number_of_files);
+	file_popularity = construct_file_popularity(number_of_files, number_of_machines);
 
-	for ( ; i < number_of_files; i++)
+	for ( ; i < number_of_files*number_of_machines; i++)
 	{
 		file_popularity->popularity[i] = popularity;
 	}
 
 	return file_popularity;
 }
-
-/*
-	for each machine
-		file_in_machine := 1;
-		
-		while file_in_machine < number_of_files_in_machine do
-			file_popularity := file_in_machine*popularity_factor
-			file_in_machine := file_in_machine + 1;
-		endwhile
-	endfor
-*/
-
-FILE_POPULARITY *generate_file_popularity_with_linear_values(int popularity_factor, FILE_ALLOCATION *file_allocation)
-{
-	FILE_POPULARITY *new_file_popularity = NULL;
-	int number_of_files = 0;
-	int i = 0;
-	int file_in_machine = 1;
-	int machine = 0;
-
-	assert(popularity_factor >= 0);
-	assert(file_allocation);
-
-	number_of_files = file_allocation->number_of_files;
-	new_file_popularity = construct_file_popularity(number_of_files);
-	
-	assert(new_file_popularity);
-
-	for ( ; i < number_of_files ; i++)
-	{
-		/*
-			If the current file is not stored in
-			the current machine, then change the 
-			value of the current machine to the
-			machine where the file is stored and 
-			reset the file in machine counter.
-		*/		
-
-		if (file_allocation->machines[i] != machine)
-		{
-			machine = file_allocation->machines[i];
-			file_in_machine = 1;	
-		}
-
-		new_file_popularity->popularity[i] = file_in_machine*popularity_factor;		
-		file_in_machine++;
-	}
-
-	return new_file_popularity;
-}
-
-
 
 
 

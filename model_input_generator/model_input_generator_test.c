@@ -58,61 +58,19 @@ void test_3_generate_file_allocation(void)
 	}
 }
 
-void test_1_generate_file_popularity(void)
+void test_1_generate_file_popularity_with_equal_value(void)
 {
-	FILE_POPULARITY *f_popul = 
-			generate_file_popularity_with_equal_value(20, 5);
-	int i = 0;	
+	FILE_POPULARITY *file_popularity = generate_file_popularity_with_equal_value(10, 2, 5);
+	int i = 0;
+		
+	assert(file_popularity);
 
-	for ( ; i < 20; i++)
+	for ( ; i < 10*2; i++)
 	{
-		assert(f_popul->popularity[i] == 5);	
+		assert(file_popularity->popularity[i] == 5);
 	}
-
-	destruct_file_popularity(f_popul);
-}
-
-void test_1_generate_file_popularity_with_linear_values(void)
-{
-	FILE_ALLOCATION *file_allocation = generate_file_allocation(6, 2);
-	FILE_POPULARITY *f_popul =
-			generate_file_popularity_with_linear_values(2, file_allocation);
-
-	assert(f_popul->popularity[0] == 2*(1 + 0));
-	assert(f_popul->popularity[1] == 2*(1 + 1));
-	assert(f_popul->popularity[2] == 2*(1 + 2));
-	assert(f_popul->popularity[0] == 2*(1 + 0));	
-	assert(f_popul->popularity[1] == 2*(1 + 1));
-	assert(f_popul->popularity[2] == 2*(1 + 2));
-
-	destruct_file_allocation(file_allocation);
-	destruct_file_popularity(f_popul);
-}
-
-void test_2_generate_file_popularity_with_linear_values(void)
-{
-	FILE_ALLOCATION *file_allocation = construct_file_allocation(7);
-	FILE_POPULARITY *f_popul =
-			generate_file_popularity_with_linear_values(2, file_allocation);
-
-	file_allocation->machines[0] = 0;
-	file_allocation->machines[1] = 0;
-	file_allocation->machines[2] = 0;
-	file_allocation->machines[3] = 0;
-	file_allocation->machines[4] = 1;
-	file_allocation->machines[5] = 1;
-	file_allocation->machines[6] = 1;
-
-	assert(f_popul->popularity[0] == 2*(1 + 0));
-	assert(f_popul->popularity[1] == 2*(1 + 1));
-	assert(f_popul->popularity[2] == 2*(1 + 2));
-	assert(f_popul->popularity[3] == 2*(1 + 3));
-	assert(f_popul->popularity[0] == 2*(1 + 0));	
-	assert(f_popul->popularity[1] == 2*(1 + 1));
-	assert(f_popul->popularity[2] == 2*(1 + 2));
-
-	destruct_file_allocation(file_allocation);
-	destruct_file_popularity(f_popul);
+		
+	destruct_file_popularity(file_popularity);		
 }
 
 void test_1_generate_file_similarity(void)
@@ -334,18 +292,8 @@ int main(void)
 	puts("Passed on test 2 generate file allocation");
 	test_3_generate_file_allocation();	
 	puts("Passed on test 3 generate file allocation");
-	test_1_generate_file_popularity();
-	puts("Passed on test 1 generate file popularity");
-	test_1_generate_file_popularity_with_linear_values();
-	puts("Passed on test 1 generate file popularity with linear values");
-	test_2_generate_file_popularity_with_linear_values();
-	puts("Passed on test 2 generate file popularity with linear values");
-	/*
-	test_1_generate_file_similarity();
-	puts("Passed on test 1 generate file similarity");
-	test_2_generate_file_similarity();
-	puts("Passed on test 2 generate file similarity");
-	*/
+	test_1_generate_file_popularity_with_equal_value();
+	puts("Passed on test 1 generate file popularity with equal value");
 	test_3_generate_file_similarity();
 	puts("Passed on test 3 generate file similarity");
 	test_4_generate_file_similarity();

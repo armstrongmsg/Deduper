@@ -39,7 +39,7 @@ void test_1(void)
 */
 void test_system_popularity(void)
 {
-	FILE_POPULARITY *file_popularity = construct_file_popularity(10);
+	FILE_POPULARITY *file_popularity = construct_file_popularity(10, 1);
 	int expected_system_popularity = 0;
 	int i = 0;
 	
@@ -55,6 +55,26 @@ void test_system_popularity(void)
 	destruct_file_popularity(file_popularity);
 }
 
+void test_popularity_is_zero_filled(void)
+{
+	FILE_POPULARITY *file_popularity = NULL;
+	int number_of_files = 10;
+	int number_of_machines = 1;
+
+	for ( ; number_of_machines <= 10; number_of_machines++)
+	{
+		int i = 0;
+		file_popularity = construct_file_popularity(number_of_files, 
+							number_of_machines);
+		assert(file_popularity);
+		for ( ; i < number_of_machines*number_of_files; i++)
+		{
+			assert(file_popularity->popularity[i] =='\0');
+		}
+		
+		destruct_file_popularity(file_popularity);	
+	}	
+}
 
 int main(void)
 {
@@ -62,6 +82,8 @@ int main(void)
 	puts("passed test_1");*/
 	test_system_popularity();
 	puts("passed test_system_popularity");
+	test_popularity_is_zero_filled();
+	puts("passed test_popularity_is_zero_filled");
 
 	return 0;
 }
