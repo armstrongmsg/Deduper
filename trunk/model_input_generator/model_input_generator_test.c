@@ -58,20 +58,164 @@ void test_3_generate_file_allocation(void)
 	}
 }
 
-void test_1_generate_file_popularity_with_equal_value(void)
+void test_generate_file_popularity_with_equal_value_1(void)
 {
-	FILE_POPULARITY *file_popularity = generate_file_popularity_with_equal_value(10, 2, 5);
+	FILE_ALLOCATION *file_allocation = construct_file_allocation(10);
+	FILE_POPULARITY *file_popularity = NULL;
+
+	file_allocation->machines[0] = 0;
+	file_allocation->machines[1] = 0;
+	file_allocation->machines[2] = 0;
+	file_allocation->machines[3] = 0;
+	file_allocation->machines[4] = 0;
+	file_allocation->machines[5] = 1;
+	file_allocation->machines[6] = 1;
+	file_allocation->machines[7] = 1;
+	file_allocation->machines[8] = 1;
+	file_allocation->machines[9] = 1;
+
+	file_popularity = generate_file_popularity_with_equal_value(10, 2, 5, file_allocation);
 	int i = 0;
 		
 	assert(file_popularity);
 
-	for ( ; i < 10*2; i++)
+	/*
+	   The first 5 files are stored in the machine 0
+	*/
+	for ( ; i < 10; i += 2)
 	{
 		assert(file_popularity->popularity[i] == 5);
+		assert(file_popularity->popularity[i + 1] == 0);
+	}	
+
+	/*
+	   The last 5 files are stored in the machine 1
+	*/
+	for (i = 10 ; i < 20; i += 2)
+	{
+		assert(file_popularity->popularity[i] == 0);
+		assert(file_popularity->popularity[i + 1] == 5);
 	}
 		
-	destruct_file_popularity(file_popularity);		
+	destruct_file_popularity(file_popularity);
+	destruct_file_allocation(file_allocation);		
 }
+
+void test_generate_file_popularity_with_equal_value_2(void)
+{
+	FILE_ALLOCATION *file_allocation = construct_file_allocation(10);
+	FILE_POPULARITY *file_popularity = NULL;
+
+	file_allocation->machines[0] = 0;
+	file_allocation->machines[1] = 0;
+	file_allocation->machines[2] = 0;
+	file_allocation->machines[3] = 0;
+	file_allocation->machines[4] = 0;
+	file_allocation->machines[5] = 0;
+	file_allocation->machines[6] = 0;
+	file_allocation->machines[7] = 0;
+	file_allocation->machines[8] = 0;
+	file_allocation->machines[9] = 0;
+
+	file_popularity = generate_file_popularity_with_equal_value(10, 1, 5, file_allocation);
+	int i = 0;
+		
+	assert(file_popularity);
+
+	/*
+	   All the files are stored in machine 0
+	*/
+	for ( ; i < 10; i++)
+	{
+		assert(file_popularity->popularity[i] == 5);
+	}	
+	
+	destruct_file_popularity(file_popularity);
+	destruct_file_allocation(file_allocation);		
+}
+
+void test_generate_file_popularity_with_equal_value_3(void)
+{
+	FILE_ALLOCATION *file_allocation = construct_file_allocation(10);
+	FILE_POPULARITY *file_popularity = NULL;
+
+	file_allocation->machines[0] = 0;
+	file_allocation->machines[1] = 1;
+	file_allocation->machines[2] = 2;
+	file_allocation->machines[3] = 3;
+	file_allocation->machines[4] = 4;
+	file_allocation->machines[5] = 0;
+	file_allocation->machines[6] = 1;
+	file_allocation->machines[7] = 2;
+	file_allocation->machines[8] = 3;
+	file_allocation->machines[9] = 4;
+
+	file_popularity = generate_file_popularity_with_equal_value(10, 5, 5, file_allocation);
+	int i = 0;
+		
+	assert(file_popularity);
+
+	for ( ; i < 10; i++)
+	{
+		int machine = 0;
+		for ( ; machine < 5; machine++)
+		{
+			if (file_allocation->machines[i] == machine)
+			{
+				assert(file_popularity->popularity[i*5 + machine] == 5);
+			}
+			else
+			{
+				assert(file_popularity->popularity[i*5 + machine] == 0);
+			}
+		}
+	}
+	
+	destruct_file_popularity(file_popularity);
+	destruct_file_allocation(file_allocation);		
+}
+
+void test_generate_file_popularity_with_equal_value_4(void)
+{
+	FILE_ALLOCATION *file_allocation = construct_file_allocation(10);
+	FILE_POPULARITY *file_popularity = NULL;
+
+	file_allocation->machines[0] = 1;
+	file_allocation->machines[1] = 0;
+	file_allocation->machines[2] = 2;
+	file_allocation->machines[3] = 4;
+	file_allocation->machines[4] = 0;
+	file_allocation->machines[5] = 2;
+	file_allocation->machines[6] = 1;
+	file_allocation->machines[7] = 3;
+	file_allocation->machines[8] = 3;
+	file_allocation->machines[9] = 0;
+
+	file_popularity = generate_file_popularity_with_equal_value(10, 5, 5, file_allocation);
+	int i = 0;
+		
+	assert(file_popularity);
+
+	for ( ; i < 10; i++)
+	{
+		int machine = 0;
+		for ( ; machine < 5; machine++)
+		{
+			if (file_allocation->machines[i] == machine)
+			{
+				assert(file_popularity->popularity[i*5 + machine] == 5);
+			}
+			else
+			{
+				assert(file_popularity->popularity[i*5 + machine] == 0);
+			}
+		}
+	}
+	
+	destruct_file_popularity(file_popularity);
+	destruct_file_allocation(file_allocation);		
+}
+
 
 void test_1_generate_file_similarity(void)
 {
@@ -292,8 +436,14 @@ int main(void)
 	puts("Passed on test 2 generate file allocation");
 	test_3_generate_file_allocation();	
 	puts("Passed on test 3 generate file allocation");
-	test_1_generate_file_popularity_with_equal_value();
-	puts("Passed on test 1 generate file popularity with equal value");
+	test_generate_file_popularity_with_equal_value_1();
+	puts("Passed on test generate file popularity with equal value 1");
+	test_generate_file_popularity_with_equal_value_2();
+	puts("Passed on test generate file popularity with equal value 2");
+	test_generate_file_popularity_with_equal_value_3();
+	puts("Passed on test generate file popularity with equal value 3");
+	test_generate_file_popularity_with_equal_value_4();
+	puts("Passed on test generate file popularity with equal value 4");
 	test_3_generate_file_similarity();
 	puts("Passed on test 3 generate file similarity");
 	test_4_generate_file_similarity();
