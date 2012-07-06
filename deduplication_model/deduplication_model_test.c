@@ -39,9 +39,13 @@ void time_access_impact_per_operation_test_1()
 
 	/*
 	   Files have the same popularity.
+	   No file sharing.
 	*/
-	file_popularity->popularity[0] = 10;
-	file_popularity->popularity[1] = 10;
+	file_popularity->popularity[0*2 + 0] = 10;
+	file_popularity->popularity[0*2 + 1] = 0;	
+
+	file_popularity->popularity[1*2 + 0] = 10;
+	file_popularity->popularity[1*2 + 1] = 0;
 
 	/*
 	   Similarity file 1
@@ -102,11 +106,17 @@ void time_access_impact_per_operation_test_2()
 
 	/*
 	   Files have the same popularity.
+	   No file sharing.
 	*/
-	file_popularity->popularity[0] = 10;
-	file_popularity->popularity[1] = 10;
-	file_popularity->popularity[2] = 10;
-
+	file_popularity->popularity[0*2 + 0] = 10;
+	file_popularity->popularity[0*2 + 1] = 0;
+	
+	file_popularity->popularity[1*2 + 0] = 10;
+	file_popularity->popularity[1*2 + 1] = 0;
+	
+	file_popularity->popularity[2*2 + 0] = 0;
+	file_popularity->popularity[2*2 + 1] = 10;
+	
 	/*
 	   Similarity file 1
 	*/	
@@ -134,6 +144,8 @@ void time_access_impact_per_operation_test_2()
 					file_popularity,
 					remote_access_time,
 					local_access_time);
+
+	printf("impact per operation->%f\n", impact_per_operation);
 
 	assert(abs2(impact_per_operation - 1.0/3) < 0.1);
 
@@ -187,14 +199,15 @@ void time_access_impact_per_operation_test_3()
 
 	/*
 	   Files have the same popularity.
+	   No file sharing.
 	*/
-	file_popularity->popularity[0] = 10;
-	file_popularity->popularity[1] = 10;
-	file_popularity->popularity[2] = 10;
-	file_popularity->popularity[3] = 10;
-	file_popularity->popularity[4] = 10;
-	file_popularity->popularity[5] = 10;
-	file_popularity->popularity[6] = 10;
+	file_popularity->popularity[0*3 + 0] = 10;
+	file_popularity->popularity[1*3 + 0] = 10;
+	file_popularity->popularity[2*3 + 0] = 10;
+	file_popularity->popularity[3*3 + 1] = 10;
+	file_popularity->popularity[4*3 + 1] = 10;
+	file_popularity->popularity[5*3 + 2] = 10;
+	file_popularity->popularity[6*3 + 2] = 10;
 
 	/*
 	   Similarity file 0
@@ -304,14 +317,15 @@ void time_access_impact_per_operation_on_machine_test_1(void)
 
 	/*
 	   Files have the same popularity.
+	   No file sharing.
 	*/
-	file_popularity->popularity[0] = 10;
-	file_popularity->popularity[1] = 10;
-	file_popularity->popularity[2] = 10;
-	file_popularity->popularity[3] = 10;
-	file_popularity->popularity[4] = 10;
-	file_popularity->popularity[5] = 10;
-	file_popularity->popularity[6] = 10;
+	file_popularity->popularity[0*3 + 0] = 10;
+	file_popularity->popularity[1*3 + 0] = 10;
+	file_popularity->popularity[2*3 + 0] = 10;
+	file_popularity->popularity[3*3 + 1] = 10;
+	file_popularity->popularity[4*3 + 1] = 10;
+	file_popularity->popularity[5*3 + 2] = 10;
+	file_popularity->popularity[6*3 + 2] = 10;
 
 	/*
 	   Similarity file 0
@@ -445,14 +459,15 @@ void time_access_impact_per_operation_on_machine_test_2(void)
 
 	/*
 	   Files have the same popularity.
+	   No file sharing.
 	*/
-	file_popularity->popularity[0] = 10;
-	file_popularity->popularity[1] = 10;
-	file_popularity->popularity[2] = 10;
-	file_popularity->popularity[3] = 10;
-	file_popularity->popularity[4] = 10;
-	file_popularity->popularity[5] = 10;
-	file_popularity->popularity[6] = 10;
+	file_popularity->popularity[0*3 + 0] = 10;
+	file_popularity->popularity[1*3 + 0] = 10;
+	file_popularity->popularity[2*3 + 0] = 10;
+	file_popularity->popularity[3*3 + 1] = 10;
+	file_popularity->popularity[4*3 + 1] = 10;
+	file_popularity->popularity[5*3 + 2] = 10;
+	file_popularity->popularity[6*3 + 2] = 10;
 
 	/*
 	   Similarity file 0
@@ -587,14 +602,15 @@ void time_access_impact_per_operation_on_machine_test_3(void)
 
 	/*
 	   Files have the same popularity.
+	   No file sharing.
 	*/
-	file_popularity->popularity[0] = 10;
-	file_popularity->popularity[1] = 10;
-	file_popularity->popularity[2] = 10;
-	file_popularity->popularity[3] = 10;
-	file_popularity->popularity[4] = 10;
-	file_popularity->popularity[5] = 10;
-	file_popularity->popularity[6] = 10;
+	file_popularity->popularity[0*3 + 0] = 10;
+	file_popularity->popularity[1*3 + 0] = 10;
+	file_popularity->popularity[2*3 + 0] = 10;
+	file_popularity->popularity[3*3 + 1] = 10;
+	file_popularity->popularity[4*3 + 1] = 10;
+	file_popularity->popularity[5*3 + 2] = 10;
+	file_popularity->popularity[6*3 + 2] = 10;
 
 	/*
 	   Similarity file 0
@@ -724,6 +740,18 @@ void time_access_impact_per_operation_on_machine_test_4(void)
 	allocation_final_system->machines[4] = 1;
 	allocation_final_system->machines[5] = -1;
 	allocation_final_system->machines[6] = -1;
+
+	/*
+	   Files have the same popularity.
+	   No file sharing.
+	*/
+	file_popularity->popularity[0*3 + 0] = 10;
+	file_popularity->popularity[1*3 + 0] = 10;
+	file_popularity->popularity[2*3 + 0] = 10;
+	file_popularity->popularity[3*3 + 1] = 10;
+	file_popularity->popularity[4*3 + 1] = 10;
+	file_popularity->popularity[5*3 + 2] = 10;
+	file_popularity->popularity[6*3 + 2] = 10;
 
 	/*
 	   Files have the same popularity.
@@ -867,14 +895,15 @@ void time_access_impact_per_operation_on_machine_test_5(void)
 
 	/*
 	   Files have the same popularity.
+	   No file sharing.
 	*/
-	file_popularity->popularity[0] = 10;
-	file_popularity->popularity[1] = 10;
-	file_popularity->popularity[2] = 10;
-	file_popularity->popularity[3] = 10;
-	file_popularity->popularity[4] = 10;
-	file_popularity->popularity[5] = 10;
-	file_popularity->popularity[6] = 10;
+	file_popularity->popularity[0*3 + 0] = 10;
+	file_popularity->popularity[1*3 + 0] = 10;
+	file_popularity->popularity[2*3 + 0] = 10;
+	file_popularity->popularity[3*3 + 1] = 10;
+	file_popularity->popularity[4*3 + 1] = 10;
+	file_popularity->popularity[5*3 + 2] = 10;
+	file_popularity->popularity[6*3 + 2] = 10;
 
 	/*
 	   Similarity file 0
@@ -994,14 +1023,15 @@ void time_access_impact_per_operation_on_machine_test_6(void)
 
 	/*
 	   Files have the same popularity.
+	   No file sharing.
 	*/
-	file_popularity->popularity[0] = 10;
-	file_popularity->popularity[1] = 10;
-	file_popularity->popularity[2] = 10;
-	file_popularity->popularity[3] = 10;
-	file_popularity->popularity[4] = 10;
-	file_popularity->popularity[5] = 10;
-	file_popularity->popularity[6] = 10;
+	file_popularity->popularity[0*3 + 0] = 10;
+	file_popularity->popularity[1*3 + 0] = 10;
+	file_popularity->popularity[2*3 + 0] = 10;
+	file_popularity->popularity[3*3 + 1] = 10;
+	file_popularity->popularity[4*3 + 1] = 10;
+	file_popularity->popularity[5*3 + 2] = 10;
+	file_popularity->popularity[6*3 + 2] = 10;
 
 	/*
 	   Similarity file 0

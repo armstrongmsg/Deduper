@@ -16,7 +16,8 @@ double impact_for_similar_file(int file_final_file_system,
 	int co_alloc = co_allocated(allocation_initial_system,
 			 file_final_file_system, 
 			 similar_file);
-	int popularity = file_popularity->popularity[similar_file];
+	int popularity = file_popularity->popularity[similar_file*file_popularity->number_of_machines + allocation_initial_system->machines[similar_file]];
+//	int popularity = file_popularity->popularity[similar_file];
 	return ((1 - co_alloc)*remote_access_time +
 			(co_alloc - 1)*local_access_time)*popularity; 	
 }
@@ -112,14 +113,15 @@ double get_time_after_deduplication(FILE_ALLOCATION *allocation_initial_system,
 			            double local_access_time)
 {
 	int file_was_deleted = (allocation_final_system->machines[file] == -1);
+	int popularity = file_popularity->popularity[file*file_popularity->number_of_machines + allocation_initial_system->machines[file]];
 	int remote_access = file_was_deleted && 
 			!there_is_similar_file_on_machine_after_deduplication(file_similarity,
 				      allocation_initial_system, 
 				      allocation_final_system, 
 				      file);
 
-	return (remote_access ? remote_access_time*file_popularity->popularity[file]:
-				 local_access_time*file_popularity->popularity[file]);
+	return (remote_access ? remote_access_time*popularity:
+				 local_access_time*popularity);
 }
 
 double time_access_impact_per_operation_on_machine(     

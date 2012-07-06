@@ -5,6 +5,19 @@
 # include "../file_popularity/file_popularity.h"
 # include "../file_similarity/file_similarity.h"
 
+int dummy_popularity = 0;
+int popularity_mul_factor = 2;
+
+int dummy_popularity_function_constant(int file)
+{
+	return dummy_popularity;
+}
+
+int dummy_popularity_function_linear(int file)
+{
+	return file*popularity_mul_factor;
+}
+
 void test_1_generate_file_allocation(void)
 {
 	FILE_ALLOCATION *f_alloc = generate_file_allocation(20, 3);
@@ -428,6 +441,271 @@ void test_5_generate_file_similarity()
 	destruct_file_similarity(file_similarity);	
 }
 
+void test_1_generate_file_popularity_using_function(void)
+{
+	int number_of_files = 2;
+	int number_of_machines = 1;
+	FILE_ALLOCATION *file_allocation = construct_file_allocation(number_of_files);
+	FILE_POPULARITY *file_popularity = NULL;
+	double shared = 0;
+	int constant_popularity = 10;
+	int popularity_factor = 2;
+	
+	assert(file_allocation);
+	file_allocation->machines[0] = 0;
+	file_allocation->machines[1] = 0;
+
+	dummy_popularity = constant_popularity;
+				
+	file_popularity = generate_file_popularity_using_function(number_of_files, 
+								number_of_machines,
+								shared,
+								file_allocation,	
+								dummy_popularity_function_constant);	
+	
+
+	assert(file_popularity);
+	assert(file_popularity->number_of_files == 2);
+	assert(file_popularity->number_of_machines == 1);
+	assert(file_popularity->popularity[0] == 10);
+	assert(file_popularity->popularity[1] == 10);
+
+	destruct_file_popularity(file_popularity);
+
+	popularity_mul_factor = popularity_factor;		
+
+	file_popularity = generate_file_popularity_using_function(number_of_files, 
+								number_of_machines,
+								shared,
+								file_allocation,	
+								dummy_popularity_function_linear);	
+	
+	assert(file_popularity);
+	assert(file_popularity->number_of_files == number_of_files);
+	assert(file_popularity->number_of_machines == number_of_machines);
+	assert(file_popularity->popularity[0] == 0);
+	assert(file_popularity->popularity[1] == 2);
+
+	destruct_file_allocation(file_allocation);
+	destruct_file_popularity(file_popularity);
+}
+
+void test_2_generate_file_popularity_using_function(void)
+{
+	int number_of_files = 4;
+	int number_of_machines = 2;
+	FILE_ALLOCATION *file_allocation = construct_file_allocation(number_of_files);
+	FILE_POPULARITY *file_popularity = NULL;
+	double shared = 0;
+	int constant_popularity = 10;
+	int popularity_factor = 2;
+	
+	assert(file_allocation);
+	file_allocation->machines[0] = 0;
+	file_allocation->machines[1] = 0;
+	file_allocation->machines[2] = 1;
+	file_allocation->machines[3] = 1;
+
+	dummy_popularity = constant_popularity;
+				
+	file_popularity = generate_file_popularity_using_function(number_of_files, 
+								number_of_machines,
+								shared,
+								file_allocation,	
+								dummy_popularity_function_constant);	
+	
+
+	assert(file_popularity);
+	assert(file_popularity->number_of_files == number_of_files);
+	assert(file_popularity->number_of_machines == number_of_machines);
+	
+	assert(file_popularity->popularity[0*number_of_machines + 0] == 10);
+	assert(file_popularity->popularity[0*number_of_machines + 1] == 0);
+	assert(file_popularity->popularity[1*number_of_machines + 0] == 10);
+	assert(file_popularity->popularity[1*number_of_machines + 1] == 0);
+	assert(file_popularity->popularity[2*number_of_machines + 0] == 0);
+	assert(file_popularity->popularity[2*number_of_machines + 1] == 10);
+	assert(file_popularity->popularity[3*number_of_machines + 0] == 0);
+	assert(file_popularity->popularity[3*number_of_machines + 1] == 10);
+
+	destruct_file_popularity(file_popularity);
+
+	popularity_mul_factor = popularity_factor;		
+
+	file_popularity = generate_file_popularity_using_function(number_of_files, 
+								number_of_machines,
+								shared,
+								file_allocation,	
+								dummy_popularity_function_linear);	
+	
+	assert(file_popularity);
+	assert(file_popularity->number_of_files == number_of_files);
+	assert(file_popularity->number_of_machines == number_of_machines);
+	
+	assert(file_popularity->popularity[0*number_of_machines + 0] == 0);
+	assert(file_popularity->popularity[0*number_of_machines + 1] == 0);
+	assert(file_popularity->popularity[1*number_of_machines + 0] == 2);
+	assert(file_popularity->popularity[1*number_of_machines + 1] == 0);
+	assert(file_popularity->popularity[2*number_of_machines + 0] == 0);
+	assert(file_popularity->popularity[2*number_of_machines + 1] == 4);
+	assert(file_popularity->popularity[3*number_of_machines + 0] == 0);
+	assert(file_popularity->popularity[3*number_of_machines + 1] == 6);
+
+	destruct_file_allocation(file_allocation);
+	destruct_file_popularity(file_popularity);
+}
+
+void test_3_generate_file_popularity_using_function(void)
+{
+	int number_of_files = 2;
+	int number_of_machines = 2;
+	FILE_ALLOCATION *file_allocation = construct_file_allocation(number_of_files);
+	FILE_POPULARITY *file_popularity = NULL;
+	double shared = 0.1;
+	int constant_popularity = 10;
+	int popularity_factor = 2;
+	
+	assert(file_allocation);
+	file_allocation->machines[0] = 0;
+	file_allocation->machines[1] = 1;
+
+	dummy_popularity = constant_popularity;
+				
+	file_popularity = generate_file_popularity_using_function(number_of_files, 
+								number_of_machines,
+								shared,
+								file_allocation,	
+								dummy_popularity_function_constant);	
+	
+
+	assert(file_popularity);
+	assert(file_popularity->number_of_files == number_of_files);
+	assert(file_popularity->number_of_machines == number_of_machines);
+	
+	assert(file_popularity->popularity[0*number_of_machines + 0] == 9);
+	assert(file_popularity->popularity[0*number_of_machines + 1] == 1);
+	assert(file_popularity->popularity[1*number_of_machines + 0] == 1);
+	assert(file_popularity->popularity[1*number_of_machines + 1] == 9);
+
+	destruct_file_popularity(file_popularity);
+
+	popularity_mul_factor = popularity_factor;		
+
+	file_popularity = generate_file_popularity_using_function(number_of_files, 
+								number_of_machines,
+								shared,
+								file_allocation,	
+								dummy_popularity_function_linear);	
+	
+	assert(file_popularity);
+	assert(file_popularity->number_of_files == number_of_files);
+	assert(file_popularity->number_of_machines == number_of_machines);
+	
+	assert(file_popularity->popularity[0*number_of_machines + 0] == 0);
+	assert(file_popularity->popularity[0*number_of_machines + 1] == 0);
+
+	/*
+	  As it was not possible to share the popularity (2/10.0 is not an integer), 
+	  all the popularity is local
+	*/
+	assert(file_popularity->popularity[1*number_of_machines + 0] == 0);
+	assert(file_popularity->popularity[1*number_of_machines + 1] == 2);
+
+	destruct_file_popularity(file_popularity);
+	
+	popularity_mul_factor = 15;		
+
+	file_popularity = generate_file_popularity_using_function(number_of_files, 
+								number_of_machines,
+								shared,
+								file_allocation,	
+								dummy_popularity_function_linear);	
+	
+	assert(file_popularity);
+	assert(file_popularity->number_of_files == number_of_files);
+	assert(file_popularity->number_of_machines == number_of_machines);
+	
+	assert(file_popularity->popularity[0*number_of_machines + 0] == 0);
+	assert(file_popularity->popularity[0*number_of_machines + 1] == 0);
+
+	/*
+	  As it was not possible to share the popularity (2/10.0 is not an integer), 
+	  all the popularity is local
+	*/
+	assert(file_popularity->popularity[1*number_of_machines + 0] == 0);
+	assert(file_popularity->popularity[1*number_of_machines + 1] == 15);
+
+	destruct_file_allocation(file_allocation);
+	destruct_file_popularity(file_popularity);
+}
+
+void test_4_generate_file_popularity_using_function(void)
+{
+	int number_of_files = 3;
+	int number_of_machines = 3;
+	FILE_ALLOCATION *file_allocation = construct_file_allocation(number_of_files);
+	FILE_POPULARITY *file_popularity = NULL;
+	double shared = 0.1;
+	int constant_popularity = 20;
+	int popularity_factor = 30;
+	
+	assert(file_allocation);
+	file_allocation->machines[0] = 0;
+	file_allocation->machines[1] = 1;
+	file_allocation->machines[2] = 2;
+
+
+	dummy_popularity = constant_popularity;
+				
+	file_popularity = generate_file_popularity_using_function(number_of_files, 
+								number_of_machines,
+								shared,
+								file_allocation,	
+								dummy_popularity_function_constant);	
+	
+
+	assert(file_popularity);
+	assert(file_popularity->number_of_files == number_of_files);
+	assert(file_popularity->number_of_machines == number_of_machines);
+	assert(file_popularity->popularity[0*number_of_machines + 0] == 18);
+	assert(file_popularity->popularity[0*number_of_machines + 1] == 1);
+	assert(file_popularity->popularity[0*number_of_machines + 2] == 1);
+	assert(file_popularity->popularity[1*number_of_machines + 0] == 1);
+	assert(file_popularity->popularity[1*number_of_machines + 1] == 18);
+	assert(file_popularity->popularity[1*number_of_machines + 2] == 1);
+	assert(file_popularity->popularity[2*number_of_machines + 0] == 1);
+	assert(file_popularity->popularity[2*number_of_machines + 1] == 1);
+	assert(file_popularity->popularity[2*number_of_machines + 2] == 18);
+
+	destruct_file_popularity(file_popularity);
+
+	popularity_mul_factor = popularity_factor;		
+
+	file_popularity = generate_file_popularity_using_function(number_of_files, 
+								number_of_machines,
+								shared,
+								file_allocation,	
+								dummy_popularity_function_linear);	
+	
+	assert(file_popularity);
+	assert(file_popularity->number_of_files == number_of_files);
+	assert(file_popularity->number_of_machines == number_of_machines);
+	
+	assert(file_popularity->popularity[0*number_of_machines + 0] == 0);
+	assert(file_popularity->popularity[0*number_of_machines + 1] == 0);
+	assert(file_popularity->popularity[0*number_of_machines + 2] == 0);
+	assert(file_popularity->popularity[1*number_of_machines + 0] == 0);
+	assert(file_popularity->popularity[1*number_of_machines + 1] == 30);
+	assert(file_popularity->popularity[1*number_of_machines + 2] == 0);
+	assert(file_popularity->popularity[2*number_of_machines + 0] == 3);
+	assert(file_popularity->popularity[2*number_of_machines + 1] == 3);
+	assert(file_popularity->popularity[2*number_of_machines + 2] == 54);
+
+	destruct_file_allocation(file_allocation);
+	destruct_file_popularity(file_popularity);
+}
+
+
 int main(void)
 {
 	test_1_generate_file_allocation();	
@@ -450,6 +728,14 @@ int main(void)
 	puts("Passed on test 4 generate file similarity");
 	test_5_generate_file_similarity();
 	puts("Passed on test 5 generate file similarity");
+	test_1_generate_file_popularity_using_function();
+	puts("Passed on test_1_generate_file_popularity_using_function");
+	test_2_generate_file_popularity_using_function();
+	puts("Passed on test_2_generate_file_popularity_using_function");
+	test_3_generate_file_popularity_using_function();
+	puts("Passed on test_3_generate_file_popularity_using_function");
+	test_4_generate_file_popularity_using_function();
+	puts("Passed on test_4_generate_file_popularity_using_function");
 
 	return 0;
 }
