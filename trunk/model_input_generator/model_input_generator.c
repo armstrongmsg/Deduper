@@ -68,6 +68,89 @@ FILE_POPULARITY *generate_file_popularity_with_equal_value(int number_of_files, 
 	return file_popularity;
 }
 
+int is_divisible(int value_1, int value_2)
+{
+	return !value_2 ? 0 : value_1%value_2 == 0;
+}
+
+void set_file_popularities(FILE_POPULARITY *new_file_popularity, FILE_ALLOCATION *file_allocation, 
+					int file, int local_popularity, int shared_popularity_per_machine)
+{
+	int machine;
+	int number_of_machines = new_file_popularity->number_of_machines;
+
+	for (machine = 0; machine < number_of_machines; machine++)
+	{
+		new_file_popularity->popularity[file*number_of_machines + machine] = 
+						(file_allocation->machines[file] == machine) ? 
+						local_popularity : shared_popularity_per_machine;
+	}
+}
+
+void set_popularity_for_file(int file, FILE_POPULARITY *new_file_popularity, FILE_ALLOCATION *file_allocation, 
+				int popularity, double shared_popularity_proportion)
+{
+	int number_of_machines = new_file_popularity->number_of_machines;
+	int shared_popularity_value;
+	int shared_popularity_per_machine;
+	int local_popularity;
+	
+	/*
+	   Only shares popularity if it is possible to divide the popularity using the 
+	   given proportion
+	*/
+	shared_popularity_value = is_divisible(popularity, shared_popularity_proportion*100) ? 
+						  popularity*shared_popularity_proportion : 0;
+
+	shared_popularity_per_machine = shared_popularity_value;
+	
+	/*
+	   This check != 1 avoids division by 0
+	*/	
+	if (number_of_machines != 1)
+	{
+		/*
+		   Only shares popularity if it is possible to divide the popularity by the 
+		   machines
+		*/
+		shared_popularity_per_machine = is_divisible(shared_popularity_value, number_of_machines - 1) ? 
+						shared_popularity_value/(number_of_machines - 1) :
+								0;
+		shared_popularity_value = !shared_popularity_per_machine ? 0 : shared_popularity_value;	
+	}	
+
+	local_popularity = popularity - shared_popularity_value;
+
+	set_file_popularities(new_file_popularity, file_allocation, file, local_popularity, 
+					shared_popularity_per_machine);
+}
+
+FILE_POPULARITY *generate_file_popularity_using_function(int number_of_files, int number_of_machines, double shared_popularity_proportion,
+                                                                FILE_ALLOCATION *file_allocation, POPULARITY_FUNCTION function)
+{
+	FILE_POPULARITY *new_file_popularity = NULL;
+	int file;
+	assert(number_of_files > 0);
+	assert(number_of_machines > 0);
+	assert(shared_popularity_proportion >= 0.0);
+	assert(file_allocation);
+	assert(function);	
+
+	new_file_popularity = construct_file_popularity(number_of_files, number_of_machines);
+	assert(new_file_popularity);
+
+	for (file = 0; file < number_of_files; file++)
+	{
+		int popularity = function(file);
+
+		set_popularity_for_file(file, new_file_popularity, file_allocation, popularity, 
+							shared_popularity_proportion);
+	}
+
+	return new_file_popularity;
+}
+
+
 
 
 

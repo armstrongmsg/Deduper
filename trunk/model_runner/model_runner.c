@@ -253,7 +253,8 @@ double run_with_same_popularity_equalized_storage(
 	file_popularity = 
 		generate_file_popularity_with_equal_value(number_of_files,
 						number_of_machines, 
-						popularity);
+						popularity, 
+						initial_file_allocation);
 	times->time_after_generate_popularity = get_time_millis();
 
 	puts("generating final file allocation...");
@@ -323,7 +324,8 @@ double *run_with_same_popularity_in_all_machines(
 	file_popularity = 
 		generate_file_popularity_with_equal_value(number_of_files, 
 						number_of_machines,
-						popularity);
+						popularity, 
+						initial_file_allocation);
 	times->time_after_generate_popularity = get_time_millis();
 
 	puts("generating final file allocation...");
@@ -394,7 +396,8 @@ double run_with_same_popularity_impact_on_machine(
 	file_popularity = 
 		generate_file_popularity_with_equal_value(number_of_files, 
 						number_of_machines,
-						popularity);
+						popularity, 
+						initial_file_allocation);
 	times->time_after_generate_popularity = get_time_millis();
 
 	puts("generating final file allocation...");

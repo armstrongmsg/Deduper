@@ -20,6 +20,8 @@
 # include "../file_popularity/file_popularity.h"
 # include "../file_similarity/file_similarity.h"
 
+typedef int(*POPULARITY_FUNCTION)(int); 
+
 /*
    Construct a new FILE_ALLOCATION with the given number of files and 
    the given number of machines.   
@@ -61,12 +63,34 @@ FILE_ALLOCATION *generate_file_allocation(int number_of_files, int number_of_mac
 
 /*
     Constructs a FILE_POPULARITY with the given number of files and the given number of machines. 
-    The popularities are constructed to simulate a situation which all file is only accessed locally, that is,
+    The popularities are constructed to simulate a situation which all files are only accessed locally, that is,
     the popularity of the file in the other machines is 0.
     The returned struct must be destructed with destruct_file_popularity.
 */
 FILE_POPULARITY *generate_file_popularity_with_equal_value(int number_of_files, int number_of_machines, int popularity, 
 								FILE_ALLOCATION *file_allocation);
+
+/*
+   Construct a FILE_POPULARITY with the given number of files and the given number of machines.
+   
+   The popularities are constructed to simulate a situation which all files have the same popularity, and the popularity
+   from the machine where they are allocated is local_popularity. The shared_popularity is divided by the other machines.
+   The returned struct must be destructed with destruct_file_popularity.
+*/
+FILE_POPULARITY *generate_file_popularity_with_equal_value_and_file_sharing(int number_of_files, int number_of_machines, int local_popularity,
+								int shared_popularity, FILE_ALLOCATION *file_allocation);
+
+/*
+   Construct a FILE_POPULARITY with the given number of files and the given number of machines.
+
+   The popularities are constructed using the given function. This function must receive the index of a file and 
+   return the popularity of the file. shared_popularity determines the amount of popularity of machines where the file
+   is not allocated.
+
+   The returned struct must be destructed with destruct_file_popularity. 
+*/
+FILE_POPULARITY *generate_file_popularity_using_function(int number_of_files, int number_of_machines, double shared_popularity, 
+								FILE_ALLOCATION *file_allocation, POPULARITY_FUNCTION function);
 
 /*
     Constructs a FILE_SIMILARITY, based on the given FILE_ALLOCATION 

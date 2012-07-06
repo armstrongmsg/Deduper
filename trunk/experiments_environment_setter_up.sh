@@ -13,6 +13,7 @@ experiment_environment_directory="experiments_environment"
 
 rm -rf $experiment_environment_directory
 
+mkdir $experiment_environment_directory
 mkdir $experiment_environment_directory/binaries
 mkdir $experiment_environment_directory/results_files
 
