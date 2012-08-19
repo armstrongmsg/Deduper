@@ -9,9 +9,9 @@
 typedef enum {number_of_files, number_of_machines, 
 		   duplication_level, remote_access_time, 	
 		   local_access_time, popularity, machine, 
-		   deduplicate_randomically} ARGUMENT_TYPE;
+		   deduplicate_randomically, shared_popularity_proportion} ARGUMENT_TYPE;
 
-char *argument_representation[] = {"f", "m", "d", "r", "l", "p", "a"};
+char *argument_representation[] = {"f", "m", "d", "r", "l", "p", "a", "s"};
 
 TIMES *times = NULL;
 
@@ -55,6 +55,7 @@ ARGUMENT_TYPE get_argument_type(char *arg_type_string)
 		case 'p': arg_type = popularity; break;
 		case 'a': arg_type = machine; break;
 		case 'x': arg_type = deduplicate_randomically; break; 
+		case 's': arg_type = shared_popularity_proportion; break;
 		default: invalid_arguments();	
 	}
 
@@ -157,6 +158,16 @@ void get_argument_value(MODEL_RUNNER_ARGS *args,
 			}
 			args->deduplicate_randomically = deduplicate_randomically;
 		} break;
+		
+		case shared_popularity_proportion:
+		{
+			double shared_popularity_proportion = atof(arg_value_string);
+			if (shared_popularity_proportion < 0)
+			{
+				invalid_arguments();
+			}
+			args->shared_popularity_proportion = shared_popularity_proportion;
+		} break;	
 	}
 }
 

@@ -17,8 +17,9 @@
    a file system 1, whose FILE_ALLOCATION is FILE_A_1. After deduplication
    process, some file will be deleted and a new FILE_ALLOCATION FILE_A_2 is 
    generated. This FILE_ALLOCATION will store data for all the files which 
-   originally were on FILE_A_1. But on these index FILE_A_2 will store -1, 
-   to let the structure client know that the file no longer exist on the system.
+   originally were on FILE_A_1. But in the case of files that were deleted, 
+   FILE_A_2 will store -1, to let the structure client know that the file no 
+   longer exist on the system.
 */
 
 # ifndef FILE_ALLOCATION_H
@@ -62,7 +63,9 @@ int co_allocated(FILE_ALLOCATION *file_allocation, int file_index_1,
 
 /*
    Returns 1 if file_index_1 exist on the FILE_ALLOCATION.
-   Returns 0 otherwise.
+   Returns 0 otherwise. 
+   To exist, in this case, means that the file exist in the 
+   system represented by file_allocation.
 */
 int exist(FILE_ALLOCATION *file_allocation, int file_index);
 
