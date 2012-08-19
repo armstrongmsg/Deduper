@@ -30,6 +30,7 @@ typedef struct
 	double local_access_time;
 	int deduplicate_randomically;
 	int machine;
+	double shared_popularity_proportion;
 } MODEL_RUNNER_ARGS;
 
 typedef struct

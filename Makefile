@@ -15,3 +15,4 @@ clean:
 	rm -f deduplication_model/deduplication_model.o
 	rm -f random/random.o
 	rm -f timer/timer.o
+	rm -f deduper
