@@ -1,0 +1,14 @@
+The purpose of deduper to exist is to help the study of data deduplication in 
+a oportunistic distributed file system. Through deduper the user can simulate 
+a system of this kind and discover properties of the deduplication in the system.
+
+deduper enables to simulate:
+- the file allocation: in which machines the files are stored in the system.
+- the file similarity: the similarity between the files in the system. Files are 
+considered similar if their contents are equals.
+- the file popularity: the amount of accesses to the files.
+
+deduper provides a command-line interface to the user to pass arguments.
+
+Initially the system was designed to investigate the impact of the data deduplication 
+in the file access time.
