@@ -1,0 +1,1 @@
+This program implements a deduplication model to analyse the feasibility of deduplication on distributed replicated file systems
